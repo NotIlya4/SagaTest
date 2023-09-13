@@ -18,13 +18,21 @@ public class TestFixture : IDisposable
 
         Context = Services.CreateScope().ServiceProvider.GetRequiredService<AppContext>();
         
-        ReloadDb();
+        // ReloadDb();
     }
 
     public void ReloadDb()
     {
         Context.Database.EnsureDeleted();
         Context.Database.EnsureCreated();
+    }
+
+    public (AppContext, IServiceScope) CreateConnection()
+    {
+        var scope = Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppContext>();
+
+        return (context, scope);
     }
 
     public void Dispose()
