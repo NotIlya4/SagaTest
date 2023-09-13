@@ -23,7 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\EfTest\EfTest.csproj" />
+      <ProjectReference Include="..\MoneyService\MoneyService.csproj" />
     </ItemGroup>
 
 </Project>

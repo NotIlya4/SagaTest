@@ -18,7 +18,7 @@ public class TestFixture : IDisposable
 
         Context = Services.CreateScope().ServiceProvider.GetRequiredService<AppContext>();
         
-        // ReloadDb();
+        ReloadDb();
     }
 
     public void ReloadDb()

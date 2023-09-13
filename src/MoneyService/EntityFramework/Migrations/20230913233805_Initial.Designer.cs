@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EfTest.EntityFramework.Migrations
 {
     [DbContext(typeof(AppContext))]
-    [Migration("20230913045111_AddConstraint")]
-    partial class AddConstraint
+    [Migration("20230913233805_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,6 +33,25 @@ namespace EfTest.EntityFramework.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Idempotencies");
+                });
+
+            modelBuilder.Entity("EfTest.Models.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsBlocked")
+                        .HasColumnType("boolean");
+
+                    b.Property<decimal>("Money")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
                 });
 #pragma warning restore 612, 618
         }

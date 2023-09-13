@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EfTest", "EfTest\EfTest.csproj", "{9A45E28B-5896-448A-96C3-BED4123F6684}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoneyService", "MoneyService\MoneyService.csproj", "{9A45E28B-5896-448A-96C3-BED4123F6684}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{076A9CDA-B21F-417A-9125-8DC11BF29C42}"
 EndProject

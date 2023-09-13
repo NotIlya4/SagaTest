@@ -4,6 +4,7 @@
         <TargetFramework>net7.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <RootNamespace>EfTest</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -20,7 +21,6 @@
 
     <ItemGroup>
       <Folder Include="Controllers" />
-      <Folder Include="EntityFramework\Migrations" />
     </ItemGroup>
 
     <ItemGroup>
