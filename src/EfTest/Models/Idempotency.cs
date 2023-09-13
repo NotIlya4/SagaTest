@@ -10,4 +10,7 @@ public record Idempotency
     {
         Id = id;
     }
+
+    public static implicit operator Idempotency(string id) => new Idempotency(id);
+    public static implicit operator string(Idempotency idempotency) => idempotency.Id;
 }
