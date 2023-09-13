@@ -5,7 +5,8 @@ namespace EfTest.EntityFramework;
 
 public class AppContext : DbContext
 {
-    public DbSet<Idempotency> Idempotencies { get; private set; }
+    public DbSet<Idempotency> Idempotencies { get; private set; } = null!;
+    public DbSet<User> Users { get; private set; } = null!;
     
     public AppContext(DbContextOptions<AppContext> options) : base(options)
     {

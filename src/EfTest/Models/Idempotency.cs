@@ -1,13 +1,10 @@
 ﻿namespace EfTest.Models;
 
-public class Idempotency
+public record Idempotency
 {
-    public string Id { get; private set; }
+    public string Id { get; private set; } = null!;
 
-    protected Idempotency()
-    {
-        Id = null!;
-    }
+    protected Idempotency() { }
 
     public Idempotency(string id)
     {
