@@ -1,13 +1,19 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using AppContext = EfTest.EntityFramework.AppContext;
 
 public static class EfCoreExtensions
 {
-    public static void AddAppContext(this IServiceCollection services, string database)
+    public static string GetPostgresConn(this IConfiguration config)
+    {
+        return config.GetSection("PostgresConn").Get<NpgsqlConnectionStringBuilder>()!.ToString();
+    }
+    
+    public static void AddAppContext(this IServiceCollection services, string conn)
     {
         services.AddDbContext<AppContext>(builder =>
         {
-            builder.UseNpgsql($"Host=localhost;Database={database};Port=5432;Username=postgres;Password=pgpass");
+            builder.UseNpgsql(conn);
         });
     }
 }
