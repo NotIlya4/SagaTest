@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using MoneyService;
+using MoneyService.Extensions;
 using AppContext = MoneyService.EntityFramework.AppContext;
 
 namespace UnitTests;

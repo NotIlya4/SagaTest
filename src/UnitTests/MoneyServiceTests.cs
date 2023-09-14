@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MoneyService;
+using MoneyService.Extensions;
 using MoneyService.Models;
 using AppContext = MoneyService.EntityFramework.AppContext;
 
@@ -10,7 +11,7 @@ namespace UnitTests;
 public class MoneyServiceTests : IClassFixture<TestFixture>, IDisposable
 {
     private readonly TestFixture _fixture;
-    private readonly MoneyService.Services.MoneyService _service;
+    private readonly MoneyService.Services.UserCrud _service;
     private readonly AppContext _context;
     private readonly IServiceScope _scope;
 

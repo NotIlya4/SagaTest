@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using AppContext = MoneyService.EntityFramework.AppContext;
 
-namespace MoneyService;
+namespace MoneyService.Extensions;
 
 public static class ServiceCollectionExtensions
 {

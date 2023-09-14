@@ -4,11 +4,11 @@ using AppContext = MoneyService.EntityFramework.AppContext;
 
 namespace MoneyService.Services;
 
-public class MoneyService
+public class UserCrud
 {
     private readonly AppContext _context;
 
-    public MoneyService(AppContext context)
+    public UserCrud(AppContext context)
     {
         _context = context;
     }

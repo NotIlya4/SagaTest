@@ -1,4 +1,6 @@
-﻿namespace MoneyService.Models;
+﻿using MoneyService.Extensions;
+
+namespace MoneyService.Models;
 
 public record User
 {

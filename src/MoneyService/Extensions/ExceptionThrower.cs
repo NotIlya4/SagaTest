@@ -1,4 +1,4 @@
-﻿namespace MoneyService;
+﻿namespace MoneyService.Extensions;
 
 public static class ExceptionThrower
 {
