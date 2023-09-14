@@ -1,4 +1,4 @@
-﻿namespace EfTest.Models;
+﻿namespace MoneyService.Models;
 
 public record User
 {
@@ -13,5 +13,27 @@ public record User
         Id = id;
         Money = money;
         IsBlocked = isBlocked;
+    }
+
+    public void AddMoney(decimal deltaMoney)
+    {
+        ValidateIsBlocked();
+        
+        var finalMoney = Money + deltaMoney;
+
+        if (finalMoney < 0)
+        {
+            ExceptionThrower.ThrowAttemptTakeMoneyMoreThanUserHas();
+        }
+
+        Money = finalMoney;
+    }
+
+    public void ValidateIsBlocked()
+    {
+        if (IsBlocked)
+        {
+            ExceptionThrower.ThrowUserIsBlocked();
+        }
     }
 }

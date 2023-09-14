@@ -1,14 +1,15 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using EfTest;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
-using AppContext = EfTest.EntityFramework.AppContext;
+using MoneyService;
+using AppContext = MoneyService.EntityFramework.AppContext;
 
 namespace UnitTests;
 
 public class TestFixture : IDisposable
 {
     internal WebApplicationFactory<Program> Factory { get; }
-    public AppContext Context { get; }
     public IServiceProvider Services { get; }
 
     public TestFixture()
@@ -16,23 +17,12 @@ public class TestFixture : IDisposable
         Factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => builder.UseEnvironment("Test"));
         Services = Factory.Services;
 
-        Context = Services.CreateScope().ServiceProvider.GetRequiredService<AppContext>();
-        
-        ReloadDb();
+        Services.CreateScope().ServiceProvider.GetAppContext().ReloadDb();
     }
 
-    public void ReloadDb()
+    public IServiceScope CreateScope()
     {
-        Context.Database.EnsureDeleted();
-        Context.Database.EnsureCreated();
-    }
-
-    public (AppContext, IServiceScope) CreateConnection()
-    {
-        var scope = Services.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<AppContext>();
-
-        return (context, scope);
+        return Services.CreateScope();
     }
 
     public void Dispose()

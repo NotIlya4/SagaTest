@@ -1,8 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using EntityFramework.Exceptions.PostgreSQL;
+using Microsoft.EntityFrameworkCore;
 using Npgsql;
-using AppContext = EfTest.EntityFramework.AppContext;
+using AppContext = MoneyService.EntityFramework.AppContext;
 
-public static class EfCoreExtensions
+namespace MoneyService;
+
+public static class ServiceCollectionExtensions
 {
     public static string GetPostgresConn(this IConfiguration config)
     {
@@ -13,7 +16,8 @@ public static class EfCoreExtensions
     {
         services.AddDbContext<AppContext>(builder =>
         {
-            builder.UseNpgsql(conn);
+            builder.UseNpgsql(conn, b => b.EnableRetryOnFailure());
+            builder.UseExceptionProcessor();
         });
     }
 }

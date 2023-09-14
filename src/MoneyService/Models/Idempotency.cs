@@ -1,4 +1,4 @@
-﻿namespace EfTest.Models;
+﻿namespace MoneyService.Models;
 
 public record Idempotency
 {

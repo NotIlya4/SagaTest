@@ -1,7 +1,7 @@
-﻿using EfTest.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using MoneyService.Models;
 
-namespace EfTest.EntityFramework;
+namespace MoneyService.EntityFramework;
 
 public class AppContext : DbContext
 {
