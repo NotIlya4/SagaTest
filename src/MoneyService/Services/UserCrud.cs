@@ -15,11 +15,5 @@ public class UserCrud
 
     public async Task InsertUser(User user, Idempotency idempotency)
     {
-        var transaction = await _context.BeginIdempotentTransaction(idempotency, IsolationLevel.RepeatableRead);
-
-        _context.Users.Add(user);
-        await _context.SaveChangesAsync();
-
-        await transaction.CommitAsync();
     }
 }

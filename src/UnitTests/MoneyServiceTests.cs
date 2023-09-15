@@ -35,30 +35,6 @@ public class MoneyServiceTests : IClassFixture<TestFixture>, IDisposable
         Assert.Equal(expect, result.Single());
     }
 
-    [Fact]
-    public async Task Test()
-    {
-        var concurrentScope = _fixture.CreateScope();
-        var concurrentDbContext = concurrentScope.ServiceProvider.GetAppContext();
-        try
-        {
-            await _context.BeginIdempotentTransaction("a");
-            await concurrentDbContext.BeginIdempotentTransaction("a");
-        }
-        finally
-        {
-            await _context.RollbackTransaction();
-            await concurrentDbContext.RollbackTransaction();
-            concurrentScope.Dispose();
-        }
-    }
-
-    [Fact]
-    public async Task Test2()
-    {
-        ResilientTransaction.
-    }
-
     public void Dispose()
     {
         _scope.Dispose();
