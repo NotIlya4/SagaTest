@@ -14,10 +14,19 @@ public static class ServiceCollectionExtensions
     
     public static void AddAppContext(this IServiceCollection services, string conn)
     {
+        services.AddDbContextFactory<AppContext>(builder =>
+        {
+            builder.ConfigureAppContext(conn);
+        });
         services.AddDbContext<AppContext>(builder =>
         {
-            builder.UseNpgsql(conn, b => b.EnableRetryOnFailure());
-            builder.UseExceptionProcessor();
+            builder.ConfigureAppContext(conn);
         });
+    }
+
+    private static void ConfigureAppContext(this DbContextOptionsBuilder builder, string conn)
+    {
+        builder.UseNpgsql(conn, b => b.EnableRetryOnFailure());
+        builder.UseExceptionProcessor();
     }
 }

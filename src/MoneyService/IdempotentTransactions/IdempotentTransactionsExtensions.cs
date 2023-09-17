@@ -13,16 +13,24 @@ public static class IdempotentTransactionsExtensions
     public static async Task<TResponse> ExecuteInTransactionAsync<TResponse>(this IExecutionStrategy strategy,
         Func<Task<TResponse>> action, IsolationLevel isolationLevel)
     {
-        return await ExecutionStrategyExtensions.ExecuteInTransactionAsync(
-            strategy,
+        // return await ExecutionStrategyExtensions.ExecuteInTransactionAsync(
+        //     strategy,
+        //     new State(),
+        //     async (_, _) =>
+        //     {
+        //         return await action();
+        //     },
+        //     (_, _) => Task.FromResult(false),
+        //     (c, _) => c.Database.BeginTransactionAsync(isolationLevel),
+        //     CancellationToken.None);
+        
+        return await strategy.ExecuteAsync<State>(
             new State(),
-            async (_, _) =>
+            async (a, b) =>
             {
-                return await action();
+                
             },
-            (_, _) => Task.FromResult(false),
-            (c, _) => c.Database.BeginTransactionAsync(isolationLevel),
-            CancellationToken.None);
+            )
     }
 
     public static DbSet<IdempotencyToken> IdempotencyTokens(this DbContext context)

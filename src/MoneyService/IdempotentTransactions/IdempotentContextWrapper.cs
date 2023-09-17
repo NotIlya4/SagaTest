@@ -1,6 +1,7 @@
 ﻿using EntityFramework.Exceptions.Common;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
+using Npgsql;
 using OneOf.Types;
 using IsolationLevel = System.Data.IsolationLevel;
 
@@ -26,15 +27,11 @@ public class IdempotentDbContextWrapper<TDbContext> where TDbContext : DbContext
     public async Task<TResponse> ExecuteIdempotentTransaction<TResponse>(Func<TDbContext, Task<TResponse>> action,
         string idempotencyToken, IsolationLevel isolationLevel)
     {
-        
+        var mainContext = await _dbContextFactory.CreateDbContextAsync();
         var token = _factory.CreateIdempotencyToken(idempotencyToken);
-        var strategy = context.Database.CreateExecutionStrategy();
+        var strategy = mainContext.Database.CreateExecutionStrategy();
         return await strategy.ExecuteInTransactionAsync(
-            async () =>
-            {
-                var context = await _dbContextFactory.CreateDbContextAsync();
-                return HandleSingleAttempt(c)
-            },
+            () => HandleSingleAttempt(mainContext, action, token),
             isolationLevel);
     }
 
@@ -42,7 +39,9 @@ public class IdempotentDbContextWrapper<TDbContext> where TDbContext : DbContext
         Func<TDbContext, Task<TResponse>> action,
         IdempotencyToken idempotencyToken)
     {
-        var addResult = await TryToAddIdempotencyToken(idempotencyToken);
+        var addResult = await TryToAddIdempotencyToken(context, idempotencyToken);
+
+        throw new NpgsqlException("asd", new TimeoutException());
 
         addResult.ThrowIfUnknownException();
         if (addResult.Value is AlreadyExists)
@@ -60,12 +59,12 @@ public class IdempotentDbContextWrapper<TDbContext> where TDbContext : DbContext
         return response;
     }
 
-    public async Task<IdempotencyTokenAddResult> TryToAddIdempotencyToken(IdempotencyToken idempotencyToken)
+    public async Task<IdempotencyTokenAddResult> TryToAddIdempotencyToken(TDbContext context, IdempotencyToken idempotencyToken)
     {
-        _context.IdempotencyTokens().Add(idempotencyToken);
+        context.IdempotencyTokens().Add(idempotencyToken);
         try
         {
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
         }
         catch (Exception e)
         {
