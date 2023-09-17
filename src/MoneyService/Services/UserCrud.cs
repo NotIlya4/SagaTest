@@ -1,5 +1,4 @@
-﻿using System.Data;
-using MoneyService.Models;
+﻿using MoneyService.Models;
 using AppContext = MoneyService.EntityFramework.AppContext;
 
 namespace MoneyService.Services;

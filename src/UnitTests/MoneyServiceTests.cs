@@ -1,7 +1,5 @@
-﻿using EfTest;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using MoneyService;
 using MoneyService.Extensions;
 using MoneyService.Models;
 using AppContext = MoneyService.EntityFramework.AppContext;

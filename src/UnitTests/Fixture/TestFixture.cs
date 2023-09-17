@@ -1,21 +1,31 @@
-﻿using EfTest;
+﻿using Ductus.FluentDocker.Builders;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using MoneyService;
 using MoneyService.Extensions;
-using AppContext = MoneyService.EntityFramework.AppContext;
 
 namespace UnitTests;
 
 public class TestFixture : IDisposable
 {
+    private static readonly PostgresContainerOptions PostgresOptions = new();
     internal WebApplicationFactory<Program> Factory { get; }
     public IServiceProvider Services { get; }
 
     public TestFixture()
     {
-        Factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder => builder.UseEnvironment("Test"));
+        new Builder()
+            .UsePostgresContainer(PostgresOptions)
+            .Build()
+            .Start();
+    
+        Factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
+        {
+            builder
+                .OverridePostgresPort(PostgresOptions.Port)
+                .UseEnvironment(AppEnvironments.Test);
+        });
         Services = Factory.Services;
 
         Services.CreateScope().ServiceProvider.GetAppContext().ReloadDb();
