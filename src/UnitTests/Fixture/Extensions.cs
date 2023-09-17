@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 
-namespace UnitTests;
+namespace UnitTests.Fixture;
 
 public static class Extensions
 {

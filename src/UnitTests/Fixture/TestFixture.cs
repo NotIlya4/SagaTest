@@ -1,21 +1,23 @@
 ﻿using Ductus.FluentDocker.Builders;
+using Ductus.FluentDocker.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using MoneyService;
 using MoneyService.Extensions;
 
-namespace UnitTests;
+namespace UnitTests.Fixture;
 
 public class TestFixture : IDisposable
 {
+    private readonly IContainerService _container;
     private static readonly PostgresContainerOptions PostgresOptions = new();
     internal WebApplicationFactory<Program> Factory { get; }
     public IServiceProvider Services { get; }
 
     public TestFixture()
     {
-        new Builder()
+        _container = new Builder()
             .UsePostgresContainer(PostgresOptions)
             .Build()
             .Start();
@@ -38,6 +40,7 @@ public class TestFixture : IDisposable
 
     public void Dispose()
     {
+        _container.Dispose();
         Factory.Dispose();
     }
 }

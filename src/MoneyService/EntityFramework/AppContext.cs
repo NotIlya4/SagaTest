@@ -1,11 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MoneyService.IdempotentTransactions;
 using MoneyService.Models;
 
 namespace MoneyService.EntityFramework;
 
 public class AppContext : DbContext
 {
-    public DbSet<Idempotency> Idempotencies { get; private set; } = null!;
+    public DbSet<IdempotencyToken> Idempotencies { get; private set; } = null!;
     public DbSet<User> Users { get; private set; } = null!;
     
     public AppContext(DbContextOptions<AppContext> options) : base(options)
@@ -17,7 +18,7 @@ public class AppContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        var idempotency = modelBuilder.Entity<Idempotency>();
+        var idempotency = modelBuilder.Entity<IdempotencyToken>();
         idempotency.Property(i => i.Id).HasMaxLength(255);
     }
 }

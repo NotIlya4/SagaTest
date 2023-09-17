@@ -1,4 +1,4 @@
-﻿namespace UnitTests;
+﻿namespace UnitTests.Fixture;
 
 public record PostgresContainerOptions
 {

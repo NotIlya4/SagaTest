@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using Microsoft.EntityFrameworkCore;
+using MoneyService.IdempotentTransactions;
 using MoneyService.Models;
 using MoneyService.Services;
 using AppContext = MoneyService.EntityFramework.AppContext;
@@ -35,22 +36,22 @@ public static class Extensions
     }
     
     public static async Task WithIdempotentTransaction(
-        this AppContext context, Func<Task> action, Idempotency idempotency, IsolationLevel isolationLevel)
+        this AppContext context, Func<Task> action, IdempotencyToken idempotencyToken, IsolationLevel isolationLevel)
     {
         await context.WithTransaction(async () =>
         {
-            context.Idempotencies.Add(idempotency);
+            context.Idempotencies.Add(idempotencyToken);
             await context.SaveChangesAsync();
             await action();
         }, isolationLevel);
     }
     
     public static async Task WithIdempotentTransaction(
-        this AppContext context, Func<Task> action, Idempotency idempotency)
+        this AppContext context, Func<Task> action, IdempotencyToken idempotencyToken)
     {
         await context.WithTransaction(async () =>
         {
-            context.Idempotencies.Add(idempotency);
+            context.Idempotencies.Add(idempotencyToken);
             await context.SaveChangesAsync();
             await action();
         });

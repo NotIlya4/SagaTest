@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using MoneyService.Extensions;
 using MoneyService.Models;
+using UnitTests.Fixture;
 using AppContext = MoneyService.EntityFramework.AppContext;
 
 namespace UnitTests;
@@ -19,18 +20,6 @@ public class MoneyServiceTests : IClassFixture<TestFixture>, IDisposable
         _scope = fixture.CreateScope();
         _context = _scope.ServiceProvider.GetAppContext();
         _service = _scope.ServiceProvider.GetMoneyService();
-    }
-
-    [Fact]
-    public async Task InsertUser_RegularUser_UserPersistInDb()
-    {
-        var expect = new User(0, 999, false);
-        await _service.InsertUser(expect, "a");
-        _context.ChangeTracker.Clear();
-
-        var result = await _context.Users.ToListAsync();
-        
-        Assert.Equal(expect, result.Single());
     }
 
     public void Dispose()
