@@ -10,7 +10,7 @@ namespace UnitTests.Fixture;
 
 public class TestFixture : IDisposable
 {
-    private readonly IContainerService _container;
+    private readonly ICompositeService _container;
     private static readonly PostgresContainerOptions PostgresOptions = new();
     internal WebApplicationFactory<Program> Factory { get; }
     public IServiceProvider Services { get; }
@@ -18,7 +18,8 @@ public class TestFixture : IDisposable
     public TestFixture()
     {
         _container = new Builder()
-            .UsePostgresContainer(PostgresOptions)
+            .UseContainer().UsePostgresContainer(PostgresOptions).Builder()
+            .UseContainer().UsePgAdminContainer(PostgresOptions).Builder()
             .Build()
             .Start();
     

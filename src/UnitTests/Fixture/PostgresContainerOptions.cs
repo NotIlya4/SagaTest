@@ -6,4 +6,7 @@ public record PostgresContainerOptions
     public string Image { get; init; } = "postgres:latest";
     public string Password { get; init; } = "pgpass";
     public string ContainerName { get; init; } = "postgres-test";
+    public int PgAdminPort { get; init; } = 8889;
+    public string PgAdminImage { get; init; } = "dpage/pgadmin4:latest";
+    public string PgAdminEmail { get; set; } = "i.krptsov@mail.ru";
 };

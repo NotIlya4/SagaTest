@@ -8,6 +8,8 @@ environments:
 repositories:
   - name: bitnami
     url: https://charts.bitnami.com/bitnami
+  - name: runix
+    url: https://helm.runix.net
     
 releases:
   - name: postgres
@@ -17,4 +19,13 @@ releases:
           postgresPassword: {{ .Values.postgres.password }}
       - primary:
           service:
-            type: {{ .Values.postgres.service.type }}
+            type: LoadBalancer
+  - name: pgadmin
+    chart: runix/pgadmin4
+    values:
+      - env:
+          email: {{ .Values.pgadmin.email }}
+          password: {{ .Values.postgres.password }}
+      - service:
+          port: 5433
+          type: LoadBalancer

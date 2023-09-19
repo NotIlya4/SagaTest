@@ -29,30 +29,53 @@ public class Tests : IDisposable, IClassFixture<TestFixture>
     [Fact]
     public async Task Test()
     {
-        var response = await _wrapper.ExecuteIdempotentTransaction(
+        var user1 = new User(0, 999, false);
+
+        _context.Add(user1);
+        await _context.SaveChangesAsync();
+        _context.Detach(user1);
+
+        await _wrapper.AutoRetryTransaction(
             async (context) =>
             {
-                var user = new User(0, 999, false);
-                context.Users.Add(user);
+                context.Attach(user1);
+                user1.Money = 123;
+
                 await context.SaveChangesAsync();
-                return user;
-            },
-            "a",
-            IsolationLevel.ReadCommitted);
-        
-        _context.ChangeTracker.Clear();
-        
-        var response2 = await _wrapper.ExecuteIdempotentTransaction(
-            async (context) =>
-            {
-                var user = new User(0, 999, false);
-                context.Users.Add(user);
-                await context.SaveChangesAsync();
-                return user;
+
+                return user1;
             },
             "a",
             IsolationLevel.ReadCommitted);
     }
+    
+    // [Fact]
+    // public async Task Test()
+    // {
+    //     var response = await _wrapper.ExecuteIdempotentTransaction(
+    //         async (context) =>
+    //         {
+    //             var user = new User(0, 999, false);
+    //             context.Users.Add(user);
+    //             await context.SaveChangesAsync();
+    //             return user;
+    //         },
+    //         "a",
+    //         IsolationLevel.ReadCommitted);
+    //     
+    //     _context.ChangeTracker.Clear();
+    //     
+    //     var response2 = await _wrapper.ExecuteIdempotentTransaction(
+    //         async (context) =>
+    //         {
+    //             var user = new User(0, 999, false);
+    //             context.Users.Add(user);
+    //             await context.SaveChangesAsync();
+    //             return user;
+    //         },
+    //         "a",
+    //         IsolationLevel.ReadCommitted);
+    // }
 
     public void Dispose()
     {

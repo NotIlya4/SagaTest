@@ -5,7 +5,7 @@ namespace MoneyService.Models;
 public record User
 {
     public int Id { get; private set; }
-    public decimal Money { get; private set; }
+    public decimal Money { get; set; }
     public bool IsBlocked { get; private set; }
 
     protected User() { }

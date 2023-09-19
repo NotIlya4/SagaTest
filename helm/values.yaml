@@ -1,4 +1,5 @@
 postgres:
   password: pgpass
-  service:
-    type: LoadBalancer
+
+pgadmin:
+  email: i.krptsov@mail.ru

@@ -24,15 +24,32 @@ public class IdempotentDbContextWrapper<TDbContext> where TDbContext : DbContext
         _dbContextFactory = dbContextFactory;
     }
 
-    public async Task<TResponse> ExecuteIdempotentTransaction<TResponse>(Func<TDbContext, Task<TResponse>> action,
-        string idempotencyToken, IsolationLevel isolationLevel)
+    // public async Task<TResponse> ExecuteIdempotentTransaction<TResponse>(Func<TDbContext, Task<TResponse>> action,
+    //     string idempotencyToken, IsolationLevel isolationLevel)
+    // {
+    //     // var mainContext = await _dbContextFactory.CreateDbContextAsync();
+    //     // var token = _factory.CreateIdempotencyToken(idempotencyToken);
+    //     // var strategy = mainContext.Database.CreateExecutionStrategy();
+    //     // return await strategy.ExecuteInTransactionAsync(
+    //     //     () => HandleSingleAttempt(mainContext, action, token),
+    //     //     isolationLevel);
+    // }
+
+    public async Task<TResponse> AutoRetryTransaction<TResponse>(Func<TDbContext, Task<TResponse>> action, string idempotencyToken, IsolationLevel isolationLevel)
     {
-        var mainContext = await _dbContextFactory.CreateDbContextAsync();
-        var token = _factory.CreateIdempotencyToken(idempotencyToken);
+        await using var mainContext = await _dbContextFactory.CreateDbContextAsync();
         var strategy = mainContext.Database.CreateExecutionStrategy();
-        return await strategy.ExecuteInTransactionAsync(
-            () => HandleSingleAttempt(mainContext, action, token),
-            isolationLevel);
+
+        return await strategy.ExecuteAsync(async () =>
+        {
+            await using var context = await _dbContextFactory.CreateDbContextAsync();
+            await using var transaction = await context.Database.BeginTransactionAsync(isolationLevel);
+
+            var response = await HandleSingleAttempt(context, action, _factory.CreateIdempotencyToken(idempotencyToken));
+            await transaction.CommitAsync();
+
+            return response;
+        });
     }
 
     private async Task<TResponse> HandleSingleAttempt<TResponse>(TDbContext context,
@@ -41,12 +58,10 @@ public class IdempotentDbContextWrapper<TDbContext> where TDbContext : DbContext
     {
         var addResult = await TryToAddIdempotencyToken(context, idempotencyToken);
 
-        throw new NpgsqlException("asd", new TimeoutException());
-
         addResult.ThrowIfUnknownException();
         if (addResult.Value is AlreadyExists)
         {
-            context.DetachIdempotencyToken(idempotencyToken);
+            context.Detach(idempotencyToken);
             var dbToken = await context.GetIdempotencyToken(idempotencyToken.Id);
             return _serializer.Deserialize<TResponse>(dbToken.Response);
         }
