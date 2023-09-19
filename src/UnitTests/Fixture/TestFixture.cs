@@ -5,33 +5,32 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using MoneyService;
 using MoneyService.Extensions;
+using AppContext = MoneyService.EntityFramework.AppContext;
 
 namespace UnitTests.Fixture;
 
 public class TestFixture : IDisposable
 {
-    private readonly ICompositeService _container;
+    private IDbBootstraper _bootstraper;
     private static readonly PostgresContainerOptions PostgresOptions = new();
     internal WebApplicationFactory<Program> Factory { get; }
     public IServiceProvider Services { get; }
+    public AppContext MainContext { get; }
 
     public TestFixture()
     {
-        _container = new Builder()
-            .UseContainer().UsePostgresContainer(PostgresOptions).Builder()
-            .UseContainer().UsePgAdminContainer(PostgresOptions).Builder()
-            .Build()
-            .Start();
-    
         Factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
         {
             builder
-                .OverridePostgresPort(PostgresOptions.Port)
+                .OverridePostgresPort(5432)
                 .UseEnvironment(AppEnvironments.Test);
         });
         Services = Factory.Services;
 
-        Services.CreateScope().ServiceProvider.GetAppContext().ReloadDb();
+        MainContext = Services.CreateScope().ServiceProvider.GetAppContext();
+        _bootstraper = new SoftDbContextBootstraper(MainContext);
+        
+        _bootstraper.PrepareReadyEmptyDb();
     }
 
     public IServiceScope CreateScope()
@@ -41,7 +40,7 @@ public class TestFixture : IDisposable
 
     public void Dispose()
     {
-        _container.Dispose();
+        _bootstraper.Clear();
         Factory.Dispose();
     }
 }

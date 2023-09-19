@@ -18,6 +18,11 @@ releases:
       - auth:
           postgresPassword: {{ .Values.postgres.password }}
       - primary:
+          extendedConfiguration: |
+            log_destination='csvlog'
+            logging_collector='on'
+            log_filename='postgresql'
+            log_statement='all'
           service:
             type: LoadBalancer
   - name: pgadmin
