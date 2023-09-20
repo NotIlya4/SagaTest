@@ -39,7 +39,7 @@ public class IdempotentDbContextWrapper<TDbContext> where TDbContext : DbContext
     {
         await using var mainContext = await _dbContextFactory.CreateDbContextAsync();
         var strategy = mainContext.Database.CreateExecutionStrategy();
-
+        
         return await strategy.ExecuteAsync(async () =>
         {
             await using var context = await _dbContextFactory.CreateDbContextAsync();

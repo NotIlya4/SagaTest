@@ -11,7 +11,7 @@ namespace UnitTests.Fixture;
 
 public class TestFixture : IDisposable
 {
-    private IDbBootstraper _bootstraper;
+    public IDbBootstraper DbBootstraper { get; }
     private static readonly PostgresContainerOptions PostgresOptions = new();
     internal WebApplicationFactory<Program> Factory { get; }
     public IServiceProvider Services { get; }
@@ -28,9 +28,9 @@ public class TestFixture : IDisposable
         Services = Factory.Services;
 
         MainContext = Services.CreateScope().ServiceProvider.GetAppContext();
-        _bootstraper = new SoftDbContextBootstraper(MainContext);
+        DbBootstraper = new SoftDbContextBootstraper(MainContext);
         
-        _bootstraper.PrepareReadyEmptyDb();
+        DbBootstraper.PrepareReadyEmptyDb();
     }
 
     public IServiceScope CreateScope()
@@ -40,7 +40,7 @@ public class TestFixture : IDisposable
 
     public void Dispose()
     {
-        _bootstraper.Clear();
+        DbBootstraper.Clear();
         Factory.Dispose();
     }
 }

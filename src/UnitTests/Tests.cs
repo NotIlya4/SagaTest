@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using MoneyService.Extensions;
 using MoneyService.IdempotentTransactions;
@@ -24,30 +25,60 @@ public class Tests : IDisposable, IClassFixture<TestFixture>
         _services = _scope.ServiceProvider;
         _context = _services.GetAppContext();
         _wrapper = _services.GetRequiredService<IdempotentDbContextWrapper<AppContext>>();
+        _fixture.DbBootstraper.PrepareReadyEmptyDb();
     }
 
+    // [Fact]
+    // public async Task Test()
+    // {
+    //     var user1 = new User(0, 999, false);
+    //
+    //     _context.Add(user1);
+    //     await _context.SaveChangesAsync();
+    //     _context.Detach(user1);
+    //
+    //     await _wrapper.AutoRetryTransaction(
+    //         async (context) =>
+    //         {
+    //             context.Attach(user1);
+    //             user1.Money = 123;
+    //
+    //             await context.SaveChangesAsync();
+    //
+    //             return user1;
+    //         },
+    //         "a",
+    //         IsolationLevel.ReadCommitted);
+    // }
+    
     [Fact]
     public async Task Test()
     {
-        var user1 = new User(0, 999, false);
-
-        _context.Add(user1);
-        await _context.SaveChangesAsync();
-        _context.Detach(user1);
-
-        await _wrapper.AutoRetryTransaction(
-            async (context) =>
+        var strategy = _context.Database.CreateExecutionStrategy();
+        await ExecutionStrategyExtensions.ExecuteInTransactionAsync(
+            strategy,
+            new EmptyState(),
+            async (_, _) =>
             {
-                context.Attach(user1);
-                user1.Money = 123;
+                var idempotencyToken = new IdempotencyToken(token);
+                _context.Add(idempotencyToken);
 
-                await context.SaveChangesAsync();
-
-                return user1;
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateException exception)
+                {
+                    // idempotency token staff
+                }
+                
+                // rest of code
             },
-            "a",
-            IsolationLevel.ReadCommitted);
+            async (_, _) => false,
+            async (c, _) => await c.Database.BeginTransactionAsync(isolationLevel));
     }
+    
+    public class State { }
     
     // [Fact]
     // public async Task Test()
@@ -79,7 +110,6 @@ public class Tests : IDisposable, IClassFixture<TestFixture>
 
     public void Dispose()
     {
-        _context.ReloadDb();
         _scope.Dispose();
     }
 }
