@@ -19,9 +19,9 @@ public static class Extensions
     }
 
     public static ContainerBuilder UsePostgresContainer(this ContainerBuilder builder,
-        PostgresContainerOptions? options = null)
+        PostgresConnectOptions? options = null)
     {
-        options ??= new PostgresContainerOptions();
+        options ??= new PostgresConnectOptions();
 
         return builder
             .WithName(options.ContainerName)
@@ -33,9 +33,9 @@ public static class Extensions
     }
     
     public static ContainerBuilder UsePgAdminContainer(this ContainerBuilder builder,
-        PostgresContainerOptions? options = null)
+        PostgresConnectOptions? options = null)
     {
-        options ??= new PostgresContainerOptions();
+        options ??= new PostgresConnectOptions();
 
         return builder
             .WithName(options.ContainerName + "-pgadmin")

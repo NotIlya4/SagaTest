@@ -1,16 +1,16 @@
-﻿using MoneyService.IdempotentTransactions;
+﻿using MoneyService.EntityFramework;
+using MoneyService.IdempotentTransactions;
 using MoneyService.Models;
-using AppContext = MoneyService.EntityFramework.AppContext;
 
 namespace MoneyService.Services;
 
 public class UserCrud
 {
-    private readonly AppContext _context;
+    private readonly AppDbContext _dbContext;
 
-    public UserCrud(AppContext context)
+    public UserCrud(AppDbContext dbContext)
     {
-        _context = context;
+        _dbContext = dbContext;
     }
 
     public async Task InsertUser(User user, IdempotencyToken idempotencyToken)

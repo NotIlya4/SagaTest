@@ -1,58 +1,58 @@
 ﻿using System.Data;
 using Microsoft.EntityFrameworkCore;
+using MoneyService.EntityFramework;
 using MoneyService.IdempotentTransactions;
 using MoneyService.Models;
 using MoneyService.Services;
-using AppContext = MoneyService.EntityFramework.AppContext;
 
 namespace MoneyService.Extensions;
 
 public static class Extensions
 {
     public static async Task WithTransaction(
-        this AppContext context, Func<Task> action, IsolationLevel isolationLevel)
+        this AppDbContext dbContext, Func<Task> action, IsolationLevel isolationLevel)
     {
-        var strategy = context.Database.CreateExecutionStrategy();
+        var strategy = dbContext.Database.CreateExecutionStrategy();
         
         await strategy.ExecuteAsync(async () =>
         {
-            await using var transaction = await context.Database.BeginTransactionAsync(isolationLevel);
+            await using var transaction = await dbContext.Database.BeginTransactionAsync(isolationLevel);
             await action();
             await transaction.CommitAsync();
         });
     }
     
     public static async Task WithTransaction(
-        this AppContext context, Func<Task> action)
+        this AppDbContext dbContext, Func<Task> action)
     {
-        var strategy = context.Database.CreateExecutionStrategy();
+        var strategy = dbContext.Database.CreateExecutionStrategy();
         
         await strategy.ExecuteAsync(async () =>
         {
-            await using var transaction = await context.Database.BeginTransactionAsync();
+            await using var transaction = await dbContext.Database.BeginTransactionAsync();
             await action();
             await transaction.CommitAsync();
         });
     }
     
     public static async Task WithIdempotentTransaction(
-        this AppContext context, Func<Task> action, IdempotencyToken idempotencyToken, IsolationLevel isolationLevel)
+        this AppDbContext dbContext, Func<Task> action, IdempotencyToken idempotencyToken, IsolationLevel isolationLevel)
     {
-        await context.WithTransaction(async () =>
+        await dbContext.WithTransaction(async () =>
         {
-            context.Idempotencies.Add(idempotencyToken);
-            await context.SaveChangesAsync();
+            dbContext.Idempotencies.Add(idempotencyToken);
+            await dbContext.SaveChangesAsync();
             await action();
         }, isolationLevel);
     }
     
     public static async Task WithIdempotentTransaction(
-        this AppContext context, Func<Task> action, IdempotencyToken idempotencyToken)
+        this AppDbContext dbContext, Func<Task> action, IdempotencyToken idempotencyToken)
     {
-        await context.WithTransaction(async () =>
+        await dbContext.WithTransaction(async () =>
         {
-            context.Idempotencies.Add(idempotencyToken);
-            await context.SaveChangesAsync();
+            dbContext.Idempotencies.Add(idempotencyToken);
+            await dbContext.SaveChangesAsync();
             await action();
         });
     }
@@ -69,9 +69,9 @@ public static class Extensions
         context.Database.EnsureCreated();
     }
 
-    public static AppContext GetAppContext(this IServiceProvider services)
+    public static AppDbContext GetAppContext(this IServiceProvider services)
     {
-        return services.GetRequiredService<AppContext>();
+        return services.GetRequiredService<AppDbContext>();
     }
     
     public static UserCrud GetMoneyService(this IServiceProvider services)

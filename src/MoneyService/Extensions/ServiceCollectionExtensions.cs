@@ -1,7 +1,7 @@
 ﻿using EntityFramework.Exceptions.PostgreSQL;
 using Microsoft.EntityFrameworkCore;
+using MoneyService.EntityFramework;
 using Npgsql;
-using AppContext = MoneyService.EntityFramework.AppContext;
 
 namespace MoneyService.Extensions;
 
@@ -14,11 +14,11 @@ public static class ServiceCollectionExtensions
     
     public static void AddAppContext(this IServiceCollection services, string conn)
     {
-        services.AddDbContextFactory<AppContext>(builder =>
+        services.AddDbContextFactory<AppDbContext>(builder =>
         {
             builder.ConfigureAppContext(conn);
         });
-        services.AddDbContext<AppContext>(builder =>
+        services.AddDbContext<AppDbContext>(builder =>
         {
             builder.ConfigureAppContext(conn);
         });

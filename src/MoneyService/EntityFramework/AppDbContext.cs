@@ -4,12 +4,12 @@ using MoneyService.Models;
 
 namespace MoneyService.EntityFramework;
 
-public class AppContext : DbContext
+public class AppDbContext : DbContext
 {
     public DbSet<IdempotencyToken> Idempotencies { get; private set; } = null!;
     public DbSet<User> Users { get; private set; } = null!;
     
-    public AppContext(DbContextOptions<AppContext> options) : base(options)
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
         
     }

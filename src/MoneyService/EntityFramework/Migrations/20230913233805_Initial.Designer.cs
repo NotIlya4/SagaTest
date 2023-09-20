@@ -4,14 +4,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using MoneyService.EntityFramework;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using AppContext = MoneyService.EntityFramework.AppContext;
 
 #nullable disable
 
 namespace EfTest.EntityFramework.Migrations
 {
-    [DbContext(typeof(AppContext))]
+    [DbContext(typeof(AppDbContext))]
     [Migration("20230913233805_Initial")]
     partial class Initial
     {

@@ -3,14 +3,14 @@ using EfTest.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using MoneyService.EntityFramework;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using AppContext = MoneyService.EntityFramework.AppContext;
 
 #nullable disable
 
 namespace EfTest.EntityFramework.Migrations
 {
-    [DbContext(typeof(AppContext))]
+    [DbContext(typeof(AppDbContext))]
     partial class AppContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

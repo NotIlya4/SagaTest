@@ -4,18 +4,18 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using MoneyService;
+using MoneyService.EntityFramework;
 using MoneyService.Extensions;
-using AppContext = MoneyService.EntityFramework.AppContext;
 
 namespace UnitTests.Fixture;
 
 public class TestFixture : IDisposable
 {
-    public IDbBootstraper DbBootstraper { get; }
-    private static readonly PostgresContainerOptions PostgresOptions = new();
+    public IDbBootstrapper DbBootstrapper { get; }
+    private static readonly PostgresConnectOptions PostgresOptions = new();
     internal WebApplicationFactory<Program> Factory { get; }
     public IServiceProvider Services { get; }
-    public AppContext MainContext { get; }
+    public AppDbContext MainDbContext { get; }
 
     public TestFixture()
     {
@@ -27,10 +27,10 @@ public class TestFixture : IDisposable
         });
         Services = Factory.Services;
 
-        MainContext = Services.CreateScope().ServiceProvider.GetAppContext();
-        DbBootstraper = new SoftDbContextBootstraper(MainContext);
+        MainDbContext = Services.CreateScope().ServiceProvider.GetAppContext();
+        DbBootstrapper = new DbContextDbBootstrapper(MainDbContext);
         
-        DbBootstraper.PrepareReadyEmptyDb();
+        DbBootstrapper.PrepareReadyEmptyDb();
     }
 
     public IServiceScope CreateScope()
@@ -40,7 +40,7 @@ public class TestFixture : IDisposable
 
     public void Dispose()
     {
-        DbBootstraper.Clear();
+        DbBootstrapper.Clear();
         Factory.Dispose();
     }
 }

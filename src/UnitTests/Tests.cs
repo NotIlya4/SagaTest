@@ -1,12 +1,13 @@
 ﻿using System.Data;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
+using MoneyService.EntityFramework;
 using MoneyService.Extensions;
 using MoneyService.IdempotentTransactions;
 using MoneyService.Models;
 using UnitTests.Fixture;
-using AppContext = MoneyService.EntityFramework.AppContext;
 
 namespace UnitTests;
 
@@ -15,18 +16,20 @@ public class Tests : IDisposable, IClassFixture<TestFixture>
     private readonly IServiceScope _scope;
     private readonly IServiceProvider _services;
     private readonly TestFixture _fixture;
-    private readonly AppContext _context;
-    private readonly IdempotentDbContextWrapper<AppContext> _wrapper;
+    private readonly AppDbContext _dbContext;
+    private readonly IdempotentDbContextWrapper<AppDbContext> _wrapper;
 
     public Tests(TestFixture fixture)
     {
         _fixture = fixture;
         _scope = fixture.CreateScope();
         _services = _scope.ServiceProvider;
-        _context = _services.GetAppContext();
-        _wrapper = _services.GetRequiredService<IdempotentDbContextWrapper<AppContext>>();
-        _fixture.DbBootstraper.PrepareReadyEmptyDb();
+        _dbContext = _services.GetAppContext();
+        _wrapper = _services.GetRequiredService<IdempotentDbContextWrapper<AppDbContext>>();
+        _fixture.DbBootstrapper.PrepareReadyEmptyDb();
     }
+    
+    
 
     // [Fact]
     // public async Task Test()
@@ -51,34 +54,34 @@ public class Tests : IDisposable, IClassFixture<TestFixture>
     //         IsolationLevel.ReadCommitted);
     // }
     
-    [Fact]
-    public async Task Test()
-    {
-        var strategy = _context.Database.CreateExecutionStrategy();
-        await ExecutionStrategyExtensions.ExecuteInTransactionAsync(
-            strategy,
-            new EmptyState(),
-            async (_, _) =>
-            {
-                var idempotencyToken = new IdempotencyToken(token);
-                _context.Add(idempotencyToken);
-
-                try
-                {
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateException exception)
-                {
-                    // idempotency token staff
-                }
-                
-                // rest of code
-            },
-            async (_, _) => false,
-            async (c, _) => await c.Database.BeginTransactionAsync(isolationLevel));
-    }
-    
-    public class State { }
+    // [Fact]
+    // public async Task Test()
+    // {
+    //     var strategy = _context.Database.CreateExecutionStrategy();
+    //     await ExecutionStrategyExtensions.ExecuteInTransactionAsync(
+    //         strategy,
+    //         new EmptyState(),
+    //         async (_, _) =>
+    //         {
+    //             var idempotencyToken = new IdempotencyToken(token);
+    //             _context.Add(idempotencyToken);
+    //
+    //             try
+    //             {
+    //                 await _context.SaveChangesAsync();
+    //             }
+    //             catch (DbUpdateException exception)
+    //             {
+    //                 // idempotency token staff
+    //             }
+    //             
+    //             // rest of code
+    //         },
+    //         async (_, _) => false,
+    //         async (c, _) => await c.Database.BeginTransactionAsync(isolationLevel));
+    // }
+    //
+    // public class State { }
     
     // [Fact]
     // public async Task Test()
