@@ -4,30 +4,32 @@ using Microsoft.EntityFrameworkCore;
 
 namespace UnitTests.Fixture;
 
-public class FluentDockerDbBootstrapper : IDbBootstrapper
+public class FluentDockerDbBootstrapper : IDbBootstrapper, IDbCleaner
 {
-    private readonly PostgresConnectOptions _postgresOptions;
+    private readonly FluentDockerPostgresOptions _fluentDockerPostgresOptions;
     private IService? _container;
 
-    public FluentDockerDbBootstrapper(PostgresConnectOptions postgresOptions)
+    public FluentDockerDbBootstrapper(FluentDockerPostgresOptions fluentDockerPostgresOptions)
     {
-        _postgresOptions = postgresOptions;
+        _fluentDockerPostgresOptions = fluentDockerPostgresOptions;
     }
 
-    public void PrepareReadyEmptyDb()
+    public void Bootstrap()
     {
-        if (_container is not null)
-        {
-            _container.Dispose();
-        }
+        Destroy();
         
         _container = new Builder()
             .UseContainer().UsePostgresContainer()
             .Build().Start();
     }
 
-    public void Clear()
+    public void Destroy()
     {
         _container?.Dispose();
+    }
+
+    public void Clean()
+    {
+        Bootstrap();
     }
 }

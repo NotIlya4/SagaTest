@@ -15,7 +15,7 @@ public class DbContextDbBootstrapper : IDbBootstrapper
         _isSoft = isSoft;
     }
 
-    public void PrepareReadyEmptyDb()
+    public void Bootstrap()
     {
         Clear();
     }

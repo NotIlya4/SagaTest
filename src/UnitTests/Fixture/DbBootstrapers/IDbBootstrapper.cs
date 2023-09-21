@@ -4,6 +4,11 @@ namespace UnitTests.Fixture;
 
 public interface IDbBootstrapper
 {
-    void PrepareReadyEmptyDb();
-    void Clear();
+    void Bootstrap();
+    void Destroy();
+}
+
+public interface IDbCleaner
+{
+    void Clean();
 }

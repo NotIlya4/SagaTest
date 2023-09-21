@@ -26,7 +26,7 @@ public class Tests : IDisposable, IClassFixture<TestFixture>
         _services = _scope.ServiceProvider;
         _dbContext = _services.GetAppContext();
         _wrapper = _services.GetRequiredService<IdempotentDbContextWrapper<AppDbContext>>();
-        _fixture.DbBootstrapper.PrepareReadyEmptyDb();
+        _fixture.DbBootstrapper.Bootstrap();
     }
     
     

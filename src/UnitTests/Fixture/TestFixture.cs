@@ -11,26 +11,27 @@ namespace UnitTests.Fixture;
 
 public class TestFixture : IDisposable
 {
+    private static readonly DesiredPostgresInstanceOptions PostgresOptions = new();
     public IDbBootstrapper DbBootstrapper { get; }
-    private static readonly PostgresConnectOptions PostgresOptions = new();
     internal WebApplicationFactory<Program> Factory { get; }
     public IServiceProvider Services { get; }
     public AppDbContext MainDbContext { get; }
 
     public TestFixture()
     {
+        var manifest = new InfrastructureManifest(PostgresOptions);
+        
         Factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
         {
-            builder
-                .OverridePostgresPort(5432)
-                .UseEnvironment(AppEnvironments.Test);
+            manifest.ConfigureOptions(builder);
+            builder.UseEnvironment(AppEnvironments.Test);
         });
         Services = Factory.Services;
 
         MainDbContext = Services.CreateScope().ServiceProvider.GetAppContext();
         DbBootstrapper = new DbContextDbBootstrapper(MainDbContext);
         
-        DbBootstrapper.PrepareReadyEmptyDb();
+        DbBootstrapper.Bootstrap();
     }
 
     public IServiceScope CreateScope()
