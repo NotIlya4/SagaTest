@@ -13,46 +13,39 @@ public class IdempotentDbContextWrapper<TDbContext> where TDbContext : DbContext
     private readonly IIdempotencyViolationDetector _violationDetector;
     private readonly ISerializer _serializer;
     private readonly IDbContextFactory<TDbContext> _dbContextFactory;
+    private readonly DbContextProvidePolicy _dbContextProvidePolicy;
 
     public IdempotentDbContextWrapper(IdempotencyFactory factory,
         IIdempotencyViolationDetector violationDetector, ISerializer serializer,
-        IDbContextFactory<TDbContext> dbContextFactory)
+        IDbContextFactory<TDbContext> dbContextFactory, DbContextProvidePolicy dbContextProvidePolicy)
     {
         _factory = factory;
         _violationDetector = violationDetector;
         _serializer = serializer;
         _dbContextFactory = dbContextFactory;
+        _dbContextProvidePolicy = dbContextProvidePolicy;
     }
 
-    // public async Task<TResponse> ExecuteIdempotentTransaction<TResponse>(Func<TDbContext, Task<TResponse>> action,
-    //     string idempotencyToken, IsolationLevel isolationLevel)
-    // {
-    //     // var mainContext = await _dbContextFactory.CreateDbContextAsync();
-    //     // var token = _factory.CreateIdempotencyToken(idempotencyToken);
-    //     // var strategy = mainContext.Database.CreateExecutionStrategy();
-    //     // return await strategy.ExecuteInTransactionAsync(
-    //     //     () => HandleSingleAttempt(mainContext, action, token),
-    //     //     isolationLevel);
-    // }
-
-    public async Task<TResponse> AutoRetryTransaction<TResponse>(Func<TDbContext, Task<TResponse>> action, string idempotencyToken, IsolationLevel isolationLevel)
+    public async Task<TResponse> WithIdempotentTransaction<TResponse>(Func<TDbContext, Task<TResponse>> action, string idempotencyToken, IsolationLevel isolationLevel)
     {
         await using var mainContext = await _dbContextFactory.CreateDbContextAsync();
         var strategy = mainContext.Database.CreateExecutionStrategy();
+        var token = _factory.CreateIdempotencyToken(idempotencyToken);
+        var dbContextProvider = new DbContextProvider<TDbContext>(mainContext, _dbContextProvidePolicy, _dbContextFactory);
         
         return await strategy.ExecuteAsync(async () =>
         {
-            await using var context = await _dbContextFactory.CreateDbContextAsync();
+            var context = await dbContextProvider.ProvideDbContext();
             await using var transaction = await context.Database.BeginTransactionAsync(isolationLevel);
 
-            var response = await HandleSingleAttempt(context, action, _factory.CreateIdempotencyToken(idempotencyToken));
+            var response = await HandleSingleAttempt(context, action, token);
             await transaction.CommitAsync();
 
             return response;
         });
     }
 
-    private async Task<TResponse> HandleSingleAttempt<TResponse>(TDbContext context,
+    public async Task<TResponse> HandleSingleAttempt<TResponse>(TDbContext context,
         Func<TDbContext, Task<TResponse>> action,
         IdempotencyToken idempotencyToken)
     {
@@ -61,9 +54,7 @@ public class IdempotentDbContextWrapper<TDbContext> where TDbContext : DbContext
         addResult.ThrowIfUnknownException();
         if (addResult.Value is AlreadyExists)
         {
-            context.Detach(idempotencyToken);
-            var dbToken = await context.GetIdempotencyToken(idempotencyToken.Id);
-            return _serializer.Deserialize<TResponse>(dbToken.Response);
+            return await HandleAlreadyAddedToken<TResponse>(context, idempotencyToken);
         }
 
         var response = await action(context);
@@ -90,9 +81,78 @@ public class IdempotentDbContextWrapper<TDbContext> where TDbContext : DbContext
 
             return new UnknownException(e);
         }
+        finally
+        {
+            context.Entry(idempotencyToken).State = EntityState.Unchanged;
+        }
 
         return new Success();
     }
+
+    public async Task<TResponse> HandleAlreadyAddedToken<TResponse>(TDbContext context, IdempotencyToken idempotencyToken)
+    {
+        context.Detach(idempotencyToken);
+        var dbToken = await context
+            .IdempotencyTokens()
+            .AsNoTracking()
+            .SingleAsync(x => x.Id == idempotencyToken.Id);
+        return _serializer.Deserialize<TResponse>(dbToken.Response);
+    }
+}
+
+public class DbContextProvider<TDbContext> where TDbContext : DbContext
+{
+    private readonly TDbContext _mainContext;
+    private readonly DbContextProvidePolicy _policy;
+    private readonly IDbContextFactory<TDbContext> _factory;
+    private TDbContext? _factoryContext;
+
+    public DbContextProvider(TDbContext mainContext, DbContextProvidePolicy policy, IDbContextFactory<TDbContext> factory)
+    {
+        _mainContext = mainContext;
+        _policy = policy;
+        _factory = factory;
+    }
+
+    public async Task<TDbContext> ProvideDbContext()
+    {
+        return _policy switch
+        {
+            DbContextProvidePolicy.ProvideSame => ProvideForSame(),
+            DbContextProvidePolicy.ClearChangeTracker => ProvideForClear(),
+            DbContextProvidePolicy.CreateNew => await ProvideForNew(),
+            _ => throw new NotImplementedException()
+        };
+    }
+
+    private TDbContext ProvideForSame()
+    {
+        return _mainContext;
+    }
+
+    private TDbContext ProvideForClear()
+    {
+        _mainContext.ChangeTracker.Clear();
+        return _mainContext;
+    }
+
+    private async Task<TDbContext> ProvideForNew()
+    {
+        if (_factoryContext is not null)
+        {
+            await _factoryContext.DisposeAsync();
+        }
+
+        _factoryContext = await _factory.CreateDbContextAsync();
+        return _factoryContext;
+    }
+}
+
+public enum DbContextProvidePolicy
+{
+    ProvideSame,
+    ClearChangeTracker,
+    CreateNew
 }
 
 public struct AlreadyExists
