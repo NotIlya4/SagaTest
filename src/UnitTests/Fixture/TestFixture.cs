@@ -6,32 +6,40 @@ using Microsoft.Extensions.DependencyInjection;
 using MoneyService;
 using MoneyService.EntityFramework;
 using MoneyService.Extensions;
+using UnitTests.Fixture.PostgresBootstrapper;
 
 namespace UnitTests.Fixture;
 
 public class TestFixture : IDisposable
 {
-    private static readonly DesiredPostgresConnOptions PostgresOptions = new();
-    public IDbBootstrapper DbBootstrapper { get; }
+    private static readonly PostgresConnOptions PostgresOptions = new();
+    public PostgresBootstrapper.PostgresBootstrapper Bootstrapper { get; }
     internal WebApplicationFactory<Program> Factory { get; }
     public IServiceProvider Services { get; }
     public AppDbContext MainDbContext { get; }
 
     public TestFixture()
     {
-        var manifest = new InfrastructureManifest(PostgresOptions);
+        var postgresContainer = new PostgresContainer(PostgresContainerOptions.FromConnOptions(PostgresOptions));
+        
+        var dbBootstrapper = new DelegateDbBootstrapper()
+        {
+            BootstrapAction = () => postgresContainer.Bootstrap(),
+            DestroyAction = () => postgresContainer.Destroy()
+        };
+        Bootstrapper = new PostgresBootstrapper.PostgresBootstrapper(PostgresOptions, dbBootstrapper);
         
         Factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
         {
-            manifest.ConfigureOptions(builder);
+            Bootstrapper.ConfigureOptions(builder);
             builder.UseEnvironment(AppEnvironments.Test);
         });
         Services = Factory.Services;
 
         MainDbContext = Services.CreateScope().ServiceProvider.GetAppContext();
-        DbBootstrapper = new DbContextDbBootstrapper(MainDbContext);
+        dbBootstrapper.CleanAction = () => MainDbContext.EnsureDeletedCreated();
         
-        DbBootstrapper.Bootstrap();
+        Bootstrapper.Bootstrap();
     }
 
     public IServiceScope CreateScope()
@@ -41,7 +49,7 @@ public class TestFixture : IDisposable
 
     public void Dispose()
     {
-        DbBootstrapper.Clear();
+        Bootstrapper.Dispose();
         Factory.Dispose();
     }
 }

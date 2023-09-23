@@ -1,4 +1,6 @@
-﻿namespace UnitTests.Fixture;
+﻿using UnitTests.Fixture.PostgresBootstrapper;
+
+namespace UnitTests.Fixture;
 
 public record PostgresContainerOptions
 {
@@ -7,12 +9,12 @@ public record PostgresContainerOptions
     public string Password { get; init; } = "pgpass";
     public string ContainerName { get; init; } = "postgres-test";
 
-    public static PostgresContainerOptions FromDesiredOptions(DesiredPostgresConnOptions desiredOptions)
+    public static PostgresContainerOptions FromConnOptions(PostgresConnOptions options)
     {
         return new PostgresContainerOptions()
         {
-            Port = desiredOptions.Port,
-            Password = desiredOptions.Password
+            Port = options.Port,
+            Password = options.Password
         };
     }
 };

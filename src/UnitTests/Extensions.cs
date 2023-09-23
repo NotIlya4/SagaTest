@@ -6,17 +6,6 @@ namespace UnitTests.Fixture;
 
 public static class Extensions
 {
-    public static IWebHostBuilder OverridePostgresPort(this IWebHostBuilder builder, int newPort)
-    {
-        var config = new ConfigurationBuilder()
-            .AddInMemoryCollection(new Dictionary<string, string?>
-            {
-                ["PostgresConn:Port"] = newPort.ToString()
-            })
-            .Build();
-        builder.UseConfiguration(config);
-        return builder;
-    }
 
     public static ContainerBuilder UsePostgresContainer(this Builder builder,
         PostgresContainerOptions? options = null)

@@ -57,16 +57,17 @@ public static class Extensions
         });
     }
 
-    public static async Task ReloadDbAsync(this DbContext context)
-    {
-        await context.Database.EnsureDeletedAsync();
-        await context.Database.EnsureCreatedAsync();
-    }
-    
-    public static void ReloadDb(this DbContext context)
+    public static void EnsureDeletedCreated(this DbContext context)
     {
         context.Database.EnsureDeleted();
         context.Database.EnsureCreated();
+    }
+
+    public static void CleanTables(this AppDbContext context)
+    {
+        context.RemoveRange(context.Idempotencies.ToList());
+        context.RemoveRange(context.Users.ToList());
+        context.SaveChanges();
     }
 
     public static AppDbContext GetAppContext(this IServiceProvider services)
