@@ -6,11 +6,11 @@ namespace UnitTests.Fixture;
 
 public class InfrastructureManifest
 {
-    private readonly DesiredPostgresOptions _postgresOptions;
+    private readonly DesiredPostgresState _postgresState;
 
-    public InfrastructureManifest(DesiredPostgresOptions postgresOptions)
+    public InfrastructureManifest(DesiredPostgresState postgresState)
     {
-        _postgresOptions = postgresOptions;
+        _postgresState = postgresState;
     }
 
     public void ConfigureOptions(IWebHostBuilder builder)
@@ -18,10 +18,10 @@ public class InfrastructureManifest
         var config = new ConfigurationBuilder()
             .AddInMemoryCollection(new Dictionary<string, string?>
             {
-                ["PostgresConn:Host"] = _postgresOptions.PostgresOptions.Host,
-                ["PostgresConn:Port"] = _postgresOptions.PostgresOptions.Port.ToString(),
-                ["PostgresConn:Username"] = _postgresOptions.PostgresOptions.Username,
-                ["PostgresConn:Password"] = _postgresOptions.PostgresOptions.Password,
+                ["PostgresConn:Host"] = _postgresState.PostgresOptions.Host,
+                ["PostgresConn:Port"] = _postgresState.PostgresOptions.Port.ToString(),
+                ["PostgresConn:Username"] = _postgresState.PostgresOptions.Username,
+                ["PostgresConn:Password"] = _postgresState.PostgresOptions.Password,
                 ["PostgresConn:Database"] = "Test"
             })
             .Build();
@@ -30,12 +30,12 @@ public class InfrastructureManifest
 
     public IDbBootstrapper CreateBootstrapper(AppDbContext context)
     {
-        return _postgresOptions.BootstrapPolicy switch
+        return _postgresState.BootstrapPolicy switch
         {
             PostgresBootstrapPolicy.ExistingContainer => new FluentDockerDbBootstrapper(
-                FluentDockerPostgresOptions.FromDesired(_postgresOptions.PostgresOptions)),
+                FluentDockerPostgresOptions.FromDesired(_postgresState.PostgresOptions)),
             PostgresBootstrapPolicy.LocalContainer => new DbContextDbBootstrapper(context,
-                _postgresOptions.CleanupPolicy == PostgresCleanupPolicy.Soft),
+                _postgresState.CleanupPolicy == PostgresCleanupPolicy.Soft),
             _ => throw new NotImplementedException()
         };
     }
@@ -61,9 +61,9 @@ public enum PostgresBootstrapPolicy
     ExistingContainer
 }
 
-public record DesiredPostgresOptions
+public record DesiredPostgresState
 {
-    public DesiredPostgresInstanceOptions PostgresOptions { get; set; }
-    public PostgresCleanupPolicy CleanupPolicy { get; set; }
-    public PostgresBootstrapPolicy BootstrapPolicy { get; set; }
+    public required DesiredPostgresInstanceOptions PostgresOptions { get; set; }
+    public required PostgresCleanupPolicy CleanupPolicy { get; set; }
+    public required PostgresBootstrapPolicy BootstrapPolicy { get; set; }
 }
