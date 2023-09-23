@@ -1,5 +1,5 @@
-﻿using MoneyService.EntityFramework;
-using MoneyService.IdempotentTransactions;
+﻿using ExecutionStrategyExtended.Models;
+using MoneyService.EntityFramework;
 using MoneyService.Models;
 
 namespace MoneyService.Services;

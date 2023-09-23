@@ -1,4 +1,4 @@
-﻿namespace MoneyService.IdempotentTransactions;
+﻿namespace ExecutionStrategyExtended.Models;
 
 public record IdempotencyToken
 {
