@@ -1,4 +1,4 @@
-﻿namespace UnitTests.Fixture.PostgresBootstrapper;
+﻿namespace UnitTests.PostgresBootstrapping;
 
 public record PostgresConnOptions
 {

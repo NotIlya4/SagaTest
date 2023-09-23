@@ -1,11 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using MoneyService.EntityFramework;
 using MoneyService.Extensions;
-using MoneyService.Models;
 using UnitTests.Fixture;
 
-namespace UnitTests;
+namespace UnitTests.Tests;
 
 public class MoneyServiceTests : IClassFixture<TestFixture>, IDisposable
 {

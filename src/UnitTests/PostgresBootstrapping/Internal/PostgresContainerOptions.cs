@@ -1,6 +1,4 @@
-﻿using UnitTests.Fixture.PostgresBootstrapper;
-
-namespace UnitTests.Fixture;
+﻿namespace UnitTests.PostgresBootstrapping.Internal;
 
 public record PostgresContainerOptions
 {

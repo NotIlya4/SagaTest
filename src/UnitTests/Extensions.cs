@@ -1,8 +1,7 @@
 ﻿using Ductus.FluentDocker.Builders;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
+using UnitTests.PostgresBootstrapping.Internal;
 
-namespace UnitTests.Fixture;
+namespace UnitTests;
 
 public static class Extensions
 {

@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using MoneyService.Models;
 
-namespace UnitTests;
+namespace UnitTests.Tests;
 
 public class PureTests
 {

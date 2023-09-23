@@ -1,7 +1,7 @@
 ﻿using Ductus.FluentDocker.Builders;
 using Ductus.FluentDocker.Services;
 
-namespace UnitTests.Fixture.PostgresBootstrapper;
+namespace UnitTests.PostgresBootstrapping.Internal;
 
 public class PostgresContainer : IDisposable
 {
@@ -41,9 +41,12 @@ public class PostgresContainer : IDisposable
 
     private void CheckDisposed()
     {
-        if (IsDisposed)
+        lock (this)
         {
-            throw new InvalidOperationException("Container disposed");
+            if (IsDisposed)
+            {
+                throw new InvalidOperationException("Container disposed");
+            }
         }
     }
 

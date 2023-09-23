@@ -1,10 +1,11 @@
-﻿namespace UnitTests.Fixture.PostgresBootstrapper;
+﻿namespace UnitTests.PostgresBootstrapping.Internal;
 
 public class DelegateDbBootstrapper : IDbBootstrapper
 {
     public Action? BootstrapAction { get; set; }
     public Action? DestroyAction { get; set; }
     public Action? CleanAction { get; set; }
+    public Action? DisposeAction { get; set; }
     
     public void Bootstrap()
     {
@@ -32,6 +33,13 @@ public class DelegateDbBootstrapper : IDbBootstrapper
 
     public void Dispose()
     {
-        Destroy();
+        if (DisposeAction is not null)
+        {
+            DisposeAction();
+        }
+        else
+        {
+            Destroy();
+        }
     }
 }
