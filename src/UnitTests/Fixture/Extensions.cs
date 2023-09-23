@@ -18,30 +18,18 @@ public static class Extensions
         return builder;
     }
 
-    public static ContainerBuilder UsePostgresContainer(this ContainerBuilder builder,
-        FluentDockerPostgresOptions? options = null)
+    public static ContainerBuilder UsePostgresContainer(this Builder builder,
+        PostgresContainerOptions? options = null)
     {
-        options ??= new FluentDockerPostgresOptions();
+        options ??= new PostgresContainerOptions();
 
         return builder
+            .UseContainer()
             .WithName(options.ContainerName)
             .DeleteIfExists(true, true)
             .UseImage(options.Image)
             .WithEnvironment($"POSTGRES_PASSWORD={options.Password}")
             .ExposePort(options.Port, 5432)
             .WaitForMessageInLog("database system is ready to accept connections", TimeSpan.FromSeconds(10));
-    }
-    
-    public static ContainerBuilder UsePgAdminContainer(this ContainerBuilder builder,
-        FluentDockerPostgresOptions? options = null)
-    {
-        options ??= new FluentDockerPostgresOptions();
-
-        return builder
-            .WithName(options.ContainerName + "-pgadmin")
-            .DeleteIfExists(true, true)
-            .UseImage(options.PgAdminImage)
-            .WithEnvironment($"PGADMIN_DEFAULT_EMAIL={options.PgAdminEmail}", $"PGADMIN_DEFAULT_PASSWORD={options.Password}")
-            .ExposePort(options.PgAdminPort, 80);
     }
 }

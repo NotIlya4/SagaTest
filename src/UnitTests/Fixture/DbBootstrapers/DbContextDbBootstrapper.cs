@@ -4,43 +4,54 @@ using MoneyService.Extensions;
 
 namespace UnitTests.Fixture;
 
-public class DbContextDbBootstrapper : IDbBootstrapper
+public class HardDbContextBootstrapper : IDbBootstrapperCleaner 
 {
     private readonly AppDbContext _context;
-    private readonly bool _isSoft;
 
-    public DbContextDbBootstrapper(AppDbContext context, bool isSoft)
+    public HardDbContextBootstrapper(AppDbContext context)
     {
         _context = context;
-        _isSoft = isSoft;
     }
-
+    
     public void Bootstrap()
     {
-        Clear();
+        Clean();
     }
 
-    public void Clear()
+    public void Destroy()
     {
-        if (_isSoft)
-        {
-            SoftClear();
-        }
-        else
-        {
-            HardClear();
-        }
+        Clean();
+    }
+    
+    public void Clean()
+    {
+        _context.ReloadDb();
+    }
+}
+
+public class SoftDbContextBootstrapper : IDbBootstrapperCleaner
+{
+    private readonly AppDbContext _context;
+
+    public SoftDbContextBootstrapper(AppDbContext context)
+    {
+        _context = context;
+    }
+    
+    public void Bootstrap()
+    {
+        Clean();
     }
 
-    private void SoftClear()
+    public void Destroy()
+    {
+        Clean();
+    }
+    
+    public void Clean()
     {
         _context.RemoveRange(_context.Idempotencies.ToList());
         _context.RemoveRange(_context.Users.ToList());
         _context.SaveChanges();
-    }
-
-    private void HardClear()
-    {
-        _context.ReloadDb();
     }
 }

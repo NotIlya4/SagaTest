@@ -11,7 +11,7 @@ namespace UnitTests.Fixture;
 
 public class TestFixture : IDisposable
 {
-    private static readonly DesiredPostgresInstanceOptions PostgresOptions = new();
+    private static readonly DesiredPostgresConnOptions PostgresOptions = new();
     public IDbBootstrapper DbBootstrapper { get; }
     internal WebApplicationFactory<Program> Factory { get; }
     public IServiceProvider Services { get; }

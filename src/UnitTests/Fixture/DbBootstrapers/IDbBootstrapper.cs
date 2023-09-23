@@ -12,3 +12,8 @@ public interface IDbCleaner
 {
     void Clean();
 }
+
+public interface IDbBootstrapperCleaner : IDbBootstrapper, IDbCleaner
+{
+    
+}
