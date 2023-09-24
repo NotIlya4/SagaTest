@@ -7,7 +7,7 @@ public interface IIdempotencyViolationDetector
     bool IsUniqueConstraintViolation(Exception e);
 }
 
-public class IdempotencyViolationDetector : IIdempotencyViolationDetector
+public class PostgresIdempotencyViolationDetector : IIdempotencyViolationDetector
 {
     public bool IsUniqueConstraintViolation(Exception e)
     {

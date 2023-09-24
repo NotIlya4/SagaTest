@@ -1,11 +1,13 @@
-﻿namespace ExecutionStrategyExtended.Models;
+﻿using Microsoft.Extensions.Internal;
+
+namespace ExecutionStrategyExtended.Models;
 
 public class IdempotencyFactory
 {
-    private readonly IClock _clock;
+    private readonly ISystemClock _clock;
     private readonly ISerializer _serializer;
 
-    public IdempotencyFactory(IClock clock, ISerializer serializer)
+    public IdempotencyFactory(ISystemClock clock, ISerializer serializer)
     {
         _clock = clock;
         _serializer = serializer;
@@ -13,7 +15,7 @@ public class IdempotencyFactory
 
     public IdempotencyToken CreateIdempotencyToken<T>(string idempotencyToken, T response)
     {
-        var time = _clock.GetCurrentTime();
+        var time = _clock.UtcNow;
         var rawResponse = _serializer.Serialize(response);
 
         return new IdempotencyToken(idempotencyToken, rawResponse, time);
@@ -21,7 +23,7 @@ public class IdempotencyFactory
 
     public IdempotencyToken CreateIdempotencyToken(string idempotencyToken)
     {
-        var time = _clock.GetCurrentTime();
+        var time = _clock.UtcNow;
 
         return new IdempotencyToken(idempotencyToken, "", time);
     }

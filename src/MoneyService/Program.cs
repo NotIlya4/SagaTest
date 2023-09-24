@@ -12,7 +12,7 @@ services.AddAppContext(config.GetPostgresConn());
 services.AddScoped<UserCrud>();
 services.AddTransient<ISerializer, Serializer>();
 services.AddTransient<IClock, Clock>();
-services.AddTransient<IIdempotencyViolationDetector, IdempotencyViolationDetector>();
+services.AddTransient<IIdempotencyViolationDetector, PostgresIdempotencyViolationDetector>();
 services.AddTransient<IdempotencyFactory>();
 services.AddScoped<ExecutionStrategyExtended<AppDbContext>>();
 

@@ -1,12 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace ExecutionStrategyExtended;
+namespace ExecutionStrategyExtended.ExecutionStrategy;
 
 public class TrueExecutionStrategy<TDbContext> where TDbContext : DbContext
 {
-    private readonly BetweenRetiesDbContextProvider<TDbContext> _contextProvider;
+    private readonly DbContextProviderBetweenReties<TDbContext> _contextProvider;
 
-    public TrueExecutionStrategy(BetweenRetiesDbContextProvider<TDbContext> contextProvider)
+    public TrueExecutionStrategy(DbContextProviderBetweenReties<TDbContext> contextProvider)
     {
         _contextProvider = contextProvider;
     }

@@ -2,13 +2,13 @@
 
 namespace ExecutionStrategyExtended;
 
-public class DbContextFactory<TDbContext> where TDbContext : DbContext
+public class DbContextFactoryBetweenReties<TDbContext> where TDbContext : DbContext
 {
     private readonly bool _disposePreviousContext;
     private readonly IDbContextFactory<TDbContext> _factory;
     private DbContext? _previousContext;
 
-    public DbContextFactory(bool disposePreviousContext, IDbContextFactory<TDbContext> factory)
+    public DbContextFactoryBetweenReties(bool disposePreviousContext, IDbContextFactory<TDbContext> factory)
     {
         _disposePreviousContext = disposePreviousContext;
         _factory = factory;
@@ -28,6 +28,7 @@ public class DbContextFactory<TDbContext> where TDbContext : DbContext
     {
         if (!_disposePreviousContext)
         {
+            _previousContext = null;
             return;
         }
 

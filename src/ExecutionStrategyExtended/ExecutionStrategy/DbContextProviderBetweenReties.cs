@@ -3,18 +3,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ExecutionStrategyExtended;
 
-public class BetweenRetiesDbContextProvider<TDbContext> where TDbContext : DbContext
+public class DbContextProviderBetweenReties<TDbContext> where TDbContext : DbContext
 {
     private readonly TDbContext _mainContext;
     private readonly DbContextRetryPolicy _policy;
-    private readonly DbContextFactory<TDbContext> _factory;
+    private readonly DbContextFactoryBetweenReties<TDbContext> _factoryBetweenReties;
     public TDbContext MainContext { get => _mainContext; }
 
-    public BetweenRetiesDbContextProvider(TDbContext mainContext, DbContextRetryPolicy policy, DbContextFactory<TDbContext> factory)
+    public DbContextProviderBetweenReties(TDbContext mainContext, DbContextRetryPolicy policy, DbContextFactoryBetweenReties<TDbContext> factoryBetweenReties)
     {
         _mainContext = mainContext;
         _policy = policy;
-        _factory = factory;
+        _factoryBetweenReties = factoryBetweenReties;
     }
 
     public async Task<TDbContext> ProvideDbContext()
@@ -41,6 +41,6 @@ public class BetweenRetiesDbContextProvider<TDbContext> where TDbContext : DbCon
 
     private async Task<TDbContext> ProvideForNew()
     {
-        return await _factory.Create();
+        return await _factoryBetweenReties.Create();
     }
 }
