@@ -1,5 +1,4 @@
-﻿using EntityFramework.Exceptions.PostgreSQL;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using MoneyService.EntityFramework;
 using Npgsql;
 

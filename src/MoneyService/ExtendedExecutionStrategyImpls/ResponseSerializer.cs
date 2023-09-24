@@ -1,8 +1,9 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using ExecutionStrategyExtended.Utils;
+using Newtonsoft.Json.Linq;
 
-namespace ExecutionStrategyExtended.Utils;
+namespace MoneyService.ExtendedExecutionStrategyImpls;
 
-public class JObjectSerializer : IResponseSerializer
+public class ResponseSerializer : IResponseSerializer
 {
     public string Serialize<T>(T obj)
     {

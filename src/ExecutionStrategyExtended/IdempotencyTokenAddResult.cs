@@ -1,23 +1,11 @@
-﻿using OneOf;
-using OneOf.Types;
+﻿namespace ExecutionStrategyExtended;
 
-namespace ExecutionStrategyExtended;
-
-[GenerateOneOf]
-internal partial class IdempotencyTokenAddResult : OneOfBase<Success, AlreadyExists>
+internal class IdempotencyTokenAddResult
 {
-    public bool IsAlreadyExists()
-    {
-        return Value is AlreadyExists;
-    }
-}
+    public bool IsAlreadyExists { get; }
 
-internal struct AlreadyExists
-{
-    public Exception Exception { get; }
-
-    public AlreadyExists(Exception exception)
+    public IdempotencyTokenAddResult(bool isAlreadyExists)
     {
-        Exception = exception;
+        IsAlreadyExists = isAlreadyExists;
     }
 }

@@ -3,7 +3,6 @@ using ExecutionStrategyExtended.Models;
 using ExecutionStrategyExtended.Options;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ExecutionStrategyExtended.Extensions;

@@ -1,6 +1,4 @@
-﻿using EntityFramework.Exceptions.Common;
-
-namespace ExecutionStrategyExtended.Utils;
+﻿namespace ExecutionStrategyExtended.Utils;
 
 public interface IIdempotencyViolationDetector
 {

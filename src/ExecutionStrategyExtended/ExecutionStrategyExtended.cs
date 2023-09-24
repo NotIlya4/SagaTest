@@ -3,7 +3,6 @@ using ExecutionStrategyExtended.Extensions;
 using ExecutionStrategyExtended.Models;
 using ExecutionStrategyExtended.Utils;
 using Microsoft.EntityFrameworkCore;
-using OneOf.Types;
 using IsolationLevel = System.Data.IsolationLevel;
 
 namespace ExecutionStrategyExtended;
@@ -54,7 +53,7 @@ internal class ExecutionStrategyExtended<TDbContext> : IExecutionStrategyExtende
     {
         var addResult = await AddIdempotencyToken(context, idempotencyToken);
 
-        if (addResult.IsAlreadyExists()) 
+        if (addResult.IsAlreadyExists) 
             return await HandleAlreadyAddedToken<TResponse>(context, idempotencyToken);
 
         var response = await action(context);
@@ -76,7 +75,7 @@ internal class ExecutionStrategyExtended<TDbContext> : IExecutionStrategyExtende
         {
             if (_violationDetector.IsUniqueConstraintViolation(e))
             {
-                return new AlreadyExists(e);
+                return new IdempotencyTokenAddResult(true);
             }
 
             throw;
@@ -86,7 +85,7 @@ internal class ExecutionStrategyExtended<TDbContext> : IExecutionStrategyExtende
             context.Entry(idempotencyToken).State = EntityState.Unchanged;
         }
 
-        return new Success();
+        return new IdempotencyTokenAddResult(false);
     }
 
     public async Task<TResponse> HandleAlreadyAddedToken<TResponse>(TDbContext context, IdempotencyToken idempotencyToken)
