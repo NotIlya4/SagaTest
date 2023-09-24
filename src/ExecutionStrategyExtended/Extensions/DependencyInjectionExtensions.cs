@@ -40,6 +40,8 @@ public static class DependencyInjectionExtensions
             .AddTransient<IConfigureOptions<IdempotentTransactionOptions>, IdempotentTransactionOptionsConfigure>(
                 provider => new IdempotentTransactionOptionsConfigure(provider, action));
 
+        services.PostConfigure<IdempotentTransactionOptions>(options => options.Validate());
+
         services.Add(new ServiceDescriptor(typeof(IdempotentTransactionOptions), Factory, lifetimeOverride));
 
         services.Add(new ServiceDescriptor(typeof(IdempotencyFactory), provider =>

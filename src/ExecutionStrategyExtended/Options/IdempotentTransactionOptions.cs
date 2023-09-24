@@ -18,4 +18,11 @@ public class IdempotentTransactionOptions
     public IdempotentTransactionPropertyOption<IResponseSerializer> ResponseSerializer { get; }
     public IdempotentTransactionPropertyOption<IIdempotencyViolationDetector> IdempotencyViolationDetector { get; }
     public IdempotentTransactionPropertyOption<BetweenRetriesBehaviorOptions> BetweenRetriesBehavior { get; }
+
+    internal void Validate()
+    {
+        SystemClock.ThrowIfNoValue(nameof(SystemClock));
+        ResponseSerializer.ThrowIfNoValue(nameof(ResponseSerializer));
+        IdempotencyViolationDetector.ThrowIfNoValue(nameof(IdempotencyViolationDetector));
+    }
 }

@@ -19,7 +19,7 @@ services.AddIdempotentTransactionServices<AppDbContext>(options =>
 {
     options
         .SystemClock.Use(new SystemClock())
-        .BetweenRetriesBehavior.Configure(behavior => behavior.WithRetryPolicy());
+        .BetweenRetriesBehavior.Configure(behavior => behavior.WithRetryPolicy(DbContextRetryPolicy.CreateNew));
 });
 
 services.AddControllers();
@@ -28,8 +28,7 @@ services.AddSwaggerGen();
 
 var app = builder.Build();
 
-var value = app.Services.GetRequiredService<IdempotentTransactionOptions>();
-var value1 = app.Services.GetRequiredService<IdempotentTransactionOptions>();
+var value = app.Services.CreateScope().ServiceProvider.GetRequiredService<IdempotentTransactionOptions>();
 
 app.UseSwagger();
 app.UseSwaggerUI();

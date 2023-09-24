@@ -16,4 +16,12 @@ public static class PropertyOptionExtensions
         propertyOption.Value = instance;
         return propertyOption.ReturnTo;
     }
+
+    internal static void ThrowIfNoValue<TOption, TReturn>(this PropertyOption<TOption, TReturn> propertyOption, string name)
+    {
+        if (propertyOption.Value is null)
+        {
+            throw new InvalidOperationException($"{name} must be provided");
+        }
+    }
 }
