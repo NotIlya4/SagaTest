@@ -1,5 +1,5 @@
 ﻿using Ductus.FluentDocker.Builders;
-using UnitTests.PostgresBootstrapping.Internal;
+using UnitTests.PostgresBootstrapping.PostgresqlContainer;
 
 namespace UnitTests;
 

@@ -1,7 +1,7 @@
 ﻿using Ductus.FluentDocker.Builders;
 using Ductus.FluentDocker.Services;
 
-namespace UnitTests.PostgresBootstrapping.Internal;
+namespace UnitTests.PostgresBootstrapping.PostgresqlContainer;
 
 public class PostgresContainer : IDisposable
 {

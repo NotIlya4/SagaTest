@@ -2,9 +2,9 @@
 using Microsoft.Extensions.Configuration;
 using MoneyService.EntityFramework;
 using MoneyService.Extensions;
-using UnitTests.PostgresBootstrapping.Internal;
+using UnitTests.PostgresBootstrapping.PostgresqlContainer;
 
-namespace UnitTests.PostgresBootstrapping;
+namespace UnitTests.PostgresBootstrapping.Bootstrapper;
 
 public enum PostgresBootstrapperType
 {

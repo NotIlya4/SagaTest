@@ -1,13 +1,11 @@
-﻿using Ductus.FluentDocker.Builders;
-using Ductus.FluentDocker.Services;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using MoneyService;
 using MoneyService.EntityFramework;
 using MoneyService.Extensions;
 using UnitTests.PostgresBootstrapping;
-using UnitTests.PostgresBootstrapping.Internal;
+using UnitTests.PostgresBootstrapping.Bootstrapper;
 
 namespace UnitTests.Fixture;
 

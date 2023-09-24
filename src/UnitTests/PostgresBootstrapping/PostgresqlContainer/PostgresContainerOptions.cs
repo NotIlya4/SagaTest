@@ -1,4 +1,4 @@
-﻿namespace UnitTests.PostgresBootstrapping.Internal;
+﻿namespace UnitTests.PostgresBootstrapping.PostgresqlContainer;
 
 public record PostgresContainerOptions
 {

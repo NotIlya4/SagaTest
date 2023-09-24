@@ -12,7 +12,7 @@ public class Serializer : ISerializer
 {
     public string Serialize<T>(T obj)
     {
-        return JObject.FromObject(obj).ToString();
+        return JObject.FromObject(obj!).ToString();
     }
 
     public T Deserialize<T>(string rawObj)

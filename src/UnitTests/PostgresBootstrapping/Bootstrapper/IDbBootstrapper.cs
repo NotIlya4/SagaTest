@@ -1,4 +1,4 @@
-﻿namespace UnitTests.PostgresBootstrapping.Internal;
+﻿namespace UnitTests.PostgresBootstrapping.Bootstrapper;
 
 public interface IDbBootstrapper : IDisposable
 {
