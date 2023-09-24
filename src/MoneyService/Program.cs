@@ -1,5 +1,10 @@
 using ExecutionStrategyExtended;
+using ExecutionStrategyExtended.Extensions;
 using ExecutionStrategyExtended.Models;
+using ExecutionStrategyExtended.Options;
+using ExecutionStrategyExtended.Utils;
+using Microsoft.Extensions.Internal;
+using Microsoft.Extensions.Options;
 using MoneyService.EntityFramework;
 using MoneyService.Extensions;
 using MoneyService.Services;
@@ -10,17 +15,21 @@ var services = builder.Services;
 
 services.AddAppContext(config.GetPostgresConn());
 services.AddScoped<UserCrud>();
-services.AddTransient<ISerializer, Serializer>();
-services.AddTransient<IClock, Clock>();
-services.AddTransient<IIdempotencyViolationDetector, PostgresIdempotencyViolationDetector>();
-services.AddTransient<IdempotencyFactory>();
-services.AddScoped<ExecutionStrategyExtended<AppDbContext>>();
+services.AddIdempotentTransactionServices<AppDbContext>(options =>
+{
+    options
+        .SystemClock.Use(new SystemClock())
+        .BetweenRetriesBehavior.Configure(behavior => behavior.WithRetryPolicy());
+});
 
 services.AddControllers();
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen();
 
 var app = builder.Build();
+
+var value = app.Services.GetRequiredService<IdempotentTransactionOptions>();
+var value1 = app.Services.GetRequiredService<IdempotentTransactionOptions>();
 
 app.UseSwagger();
 app.UseSwaggerUI();

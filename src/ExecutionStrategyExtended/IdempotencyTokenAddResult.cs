@@ -4,7 +4,7 @@ using OneOf.Types;
 namespace ExecutionStrategyExtended;
 
 [GenerateOneOf]
-public partial class IdempotencyTokenAddResult : OneOfBase<Success, AlreadyExists>
+internal partial class IdempotencyTokenAddResult : OneOfBase<Success, AlreadyExists>
 {
     public bool IsAlreadyExists()
     {
@@ -12,7 +12,7 @@ public partial class IdempotencyTokenAddResult : OneOfBase<Success, AlreadyExist
     }
 }
 
-public struct AlreadyExists
+internal struct AlreadyExists
 {
     public Exception Exception { get; }
 

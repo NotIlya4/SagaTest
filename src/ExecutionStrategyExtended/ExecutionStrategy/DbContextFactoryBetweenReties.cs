@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace ExecutionStrategyExtended;
+namespace ExecutionStrategyExtended.ExecutionStrategy;
 
-public class DbContextFactoryBetweenReties<TDbContext> where TDbContext : DbContext
+internal class DbContextFactoryBetweenReties<TDbContext> where TDbContext : DbContext
 {
     private readonly bool _disposePreviousContext;
     private readonly IDbContextFactory<TDbContext> _factory;

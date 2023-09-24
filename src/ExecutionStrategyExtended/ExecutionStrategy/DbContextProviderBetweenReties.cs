@@ -1,9 +1,9 @@
 ﻿using ExecutionStrategyExtended.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace ExecutionStrategyExtended;
+namespace ExecutionStrategyExtended.ExecutionStrategy;
 
-public class DbContextProviderBetweenReties<TDbContext> where TDbContext : DbContext
+internal class DbContextProviderBetweenReties<TDbContext> where TDbContext : DbContext
 {
     private readonly TDbContext _mainContext;
     private readonly DbContextRetryPolicy _policy;

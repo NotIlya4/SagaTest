@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ExecutionStrategyExtended.ExecutionStrategy;
 
-public class TrueExecutionStrategyFactory<TDbContext> where TDbContext : DbContext
+internal class TrueExecutionStrategyFactory<TDbContext> where TDbContext : DbContext
 {
     private readonly DbContextRetryPolicy _policy;
     private readonly DbContextFactoryBetweenReties<TDbContext> _factoryBetweenReties;

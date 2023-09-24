@@ -3,9 +3,9 @@ using ExecutionStrategyExtended.ExecutionStrategy;
 using ExecutionStrategyExtended.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace ExecutionStrategyExtended;
+namespace ExecutionStrategyExtended.Extensions;
 
-public static class Extensions
+internal static class DbContextExtensions
 {
     public static async Task<TResponse> ExecuteInTransactionAsync<TDbContext, TResponse>(
         this TrueExecutionStrategy<TDbContext> trueStrategy, Func<TDbContext, Task<TResponse>> action, 
@@ -23,12 +23,12 @@ public static class Extensions
         });
     }
     
-    public static DbSet<IdempotencyToken> IdempotencyTokens(this DbContext context)
+    internal static DbSet<IdempotencyToken> IdempotencyTokens(this DbContext context)
     {
         return context.Set<IdempotencyToken>();
     }
 
-    public static void Detach<T>(this DbContext context, T entity)
+    internal static void Detach<T>(this DbContext context, T entity)
     {
         context.Entry(entity!).State = EntityState.Detached;
     }

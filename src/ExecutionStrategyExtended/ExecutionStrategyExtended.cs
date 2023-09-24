@@ -1,25 +1,27 @@
 ﻿using ExecutionStrategyExtended.ExecutionStrategy;
+using ExecutionStrategyExtended.Extensions;
 using ExecutionStrategyExtended.Models;
+using ExecutionStrategyExtended.Utils;
 using Microsoft.EntityFrameworkCore;
 using OneOf.Types;
 using IsolationLevel = System.Data.IsolationLevel;
 
 namespace ExecutionStrategyExtended;
 
-public class ExecutionStrategyExtended<TDbContext> where TDbContext : DbContext
+internal class ExecutionStrategyExtended<TDbContext> : IExecutionStrategyExtended<TDbContext> where TDbContext : DbContext
 {
     private readonly IdempotencyFactory _factory;
     private readonly IIdempotencyViolationDetector _violationDetector;
-    private readonly ISerializer _serializer;
+    private readonly IResponseSerializer _responseSerializer;
     private readonly TrueExecutionStrategyFactory<TDbContext> _executionStrategyFactory;
 
     public ExecutionStrategyExtended(IdempotencyFactory factory,
-        IIdempotencyViolationDetector violationDetector, ISerializer serializer,
+        IIdempotencyViolationDetector violationDetector, IResponseSerializer responseSerializer,
         TrueExecutionStrategyFactory<TDbContext> executionStrategyFactory)
     {
         _factory = factory;
         _violationDetector = violationDetector;
-        _serializer = serializer;
+        _responseSerializer = responseSerializer;
         _executionStrategyFactory = executionStrategyFactory;
     }
 
@@ -56,7 +58,7 @@ public class ExecutionStrategyExtended<TDbContext> where TDbContext : DbContext
             return await HandleAlreadyAddedToken<TResponse>(context, idempotencyToken);
 
         var response = await action(context);
-        idempotencyToken.Response = _serializer.Serialize(response);
+        idempotencyToken.Response = _responseSerializer.Serialize(response);
 
         await context.SaveChangesAsync();
 
@@ -94,6 +96,6 @@ public class ExecutionStrategyExtended<TDbContext> where TDbContext : DbContext
             .IdempotencyTokens()
             .AsNoTracking()
             .SingleAsync(x => x.Id == idempotencyToken.Id);
-        return _serializer.Deserialize<TResponse>(dbToken.Response);
+        return _responseSerializer.Deserialize<TResponse>(dbToken.Response);
     }
 }

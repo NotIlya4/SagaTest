@@ -2,7 +2,7 @@
 
 namespace ExecutionStrategyExtended.ExecutionStrategy;
 
-public class TrueExecutionStrategy<TDbContext> where TDbContext : DbContext
+internal class TrueExecutionStrategy<TDbContext> where TDbContext : DbContext
 {
     private readonly DbContextProviderBetweenReties<TDbContext> _contextProvider;
 

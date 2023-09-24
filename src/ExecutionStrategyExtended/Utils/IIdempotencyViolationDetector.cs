@@ -1,16 +1,8 @@
 ﻿using EntityFramework.Exceptions.Common;
 
-namespace ExecutionStrategyExtended;
+namespace ExecutionStrategyExtended.Utils;
 
 public interface IIdempotencyViolationDetector
 {
     bool IsUniqueConstraintViolation(Exception e);
-}
-
-public class PostgresIdempotencyViolationDetector : IIdempotencyViolationDetector
-{
-    public bool IsUniqueConstraintViolation(Exception e)
-    {
-        return e is UniqueConstraintException;
-    }
 }

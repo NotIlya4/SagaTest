@@ -1,14 +1,8 @@
 ﻿using Newtonsoft.Json.Linq;
 
-namespace ExecutionStrategyExtended;
+namespace ExecutionStrategyExtended.Utils;
 
-public interface ISerializer
-{
-    string Serialize<T>(T obj);
-    T Deserialize<T>(string rawObj);
-}
-
-public class Serializer : ISerializer
+public class JObjectSerializer : IResponseSerializer
 {
     public string Serialize<T>(T obj)
     {
