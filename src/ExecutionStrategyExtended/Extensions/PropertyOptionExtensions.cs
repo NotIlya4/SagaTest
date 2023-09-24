@@ -1,4 +1,6 @@
-﻿namespace ExecutionStrategyExtended.Options;
+﻿using ExecutionStrategyExtended.Options;
+
+namespace ExecutionStrategyExtended.Extensions;
 
 public static class PropertyOptionExtensions 
 {

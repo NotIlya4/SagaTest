@@ -2,6 +2,7 @@
 using ExecutionStrategyExtended.Extensions;
 using ExecutionStrategyExtended.Models;
 using ExecutionStrategyExtended.Utils;
+using ExecutionStrategyExtended.ViolationDetector;
 using Microsoft.EntityFrameworkCore;
 using IsolationLevel = System.Data.IsolationLevel;
 

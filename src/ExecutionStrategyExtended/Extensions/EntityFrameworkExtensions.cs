@@ -39,14 +39,9 @@ public static class EntityFrameworkExtensions
         
         builder.Entity<IdempotencyToken>(typeBuilder =>
         {
+            typeBuilder.HasKey(x => x.Id).HasName(options.PrimaryKeyConstraintName);
             typeBuilder.Property(x => x.Id).HasMaxLength(options.MaxLength);
             typeBuilder.ToTable(options.TableName);
         });
     }
-}
-
-public record IdempotencyTokenTableOptions
-{
-    public int MaxLength { get; set; } = 255;
-    public string TableName { get; set; } = "IdempotencyTokens";
 }

@@ -1,4 +1,7 @@
+using ExecutionStrategyExtended.Extensions;
 using ExecutionStrategyExtended.Options;
+using MoneyService.EntityFramework;
+using MoneyService.ExtendedExecutionStrategyImpls;
 using MoneyService.Extensions;
 using MoneyService.Services;
 
@@ -8,6 +11,11 @@ var services = builder.Services;
 
 services.AddAppContext(config.GetPostgresConn());
 services.AddScoped<UserCrud>();
+
+services.AddExecutionStrategyExtended<AppDbContext>(options =>
+{
+    options.ResponseSerializer.Use(new ResponseSerializer());
+});
 
 services.AddControllers();
 services.AddEndpointsApiExplorer();

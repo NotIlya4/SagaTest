@@ -1,4 +1,4 @@
-﻿namespace ExecutionStrategyExtended.Utils;
+﻿namespace ExecutionStrategyExtended.ViolationDetector;
 
 public interface IIdempotencyViolationDetector
 {
