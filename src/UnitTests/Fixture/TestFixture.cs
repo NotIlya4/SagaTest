@@ -20,17 +20,17 @@ public class TestFixture : IDisposable
 
     public TestFixture()
     {
-        var postgresFinalizer = PostgresBootstrapperBuilder.BuildForExistingDb();
+        var bootstrapperBuilder = new PostgresBootstrapperBuilder(PostgresBootstrapperType.LocalContainer, new PostgresConnOptions());
         
         Factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
         {
-            postgresFinalizer.ConfigureOptions(builder);
+            bootstrapperBuilder.ConfigureOptions(builder);
             builder.UseEnvironment(AppEnvironments.Test);
         });
         Services = Factory.Services;
 
         MainDbContext = Services.CreateScope().ServiceProvider.GetAppContext();
-        Bootstrapper = postgresFinalizer.Finalize(MainDbContext);
+        Bootstrapper = bootstrapperBuilder.CreateDbBootstrapper(MainDbContext);
         
         Bootstrapper.Bootstrap();
         Bootstrapper.Clean();

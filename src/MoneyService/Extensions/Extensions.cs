@@ -11,6 +11,12 @@ public static class Extensions
         context.RemoveRange(context.Users.ToList());
         context.SaveChanges();
     }
+    
+    public static void EnsureDeletedCreated(this AppDbContext context)
+    {
+        context.Database.EnsureDeleted();
+        context.Database.EnsureCreated();
+    }
 
     public static AppDbContext GetAppContext(this IServiceProvider services)
     {

@@ -20,12 +20,17 @@ public class PostgresContainer : IDisposable
         {
             CheckDisposed();
             
-            Destroy();
-        
-            _container = new Builder()
-                .UsePostgresContainer(_options)
-                .Build().Start();
+            BootstrapCore();
         }
+    }
+
+    private void BootstrapCore()
+    {
+        Destroy();
+        
+        _container = new Builder()
+            .UsePostgresContainer(_options)
+            .Build().Start();
     }
 
     public void Destroy()
