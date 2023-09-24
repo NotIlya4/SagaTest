@@ -70,10 +70,15 @@ public static class DependencyInjectionExtensions
             return new ExecutionStrategyExtended<TDbContext>(idempotencyFactory,
                 options.IdempotencyViolationDetector.Value!, options.ResponseSerializer.Value!, strategyFactory);
         }, lifetimeOverride));
-        
-        services.Add(new ServiceDescriptor(typeof(DefaultIdempotencyViolationDetector), lifetimeOverride));
+
+        services.Add(new ServiceDescriptor(typeof(DefaultIdempotencyViolationDetector),
+            typeof(DefaultIdempotencyViolationDetector), lifetimeOverride));
         services.Add(new ServiceDescriptor(typeof(IIdempotencyViolationDetector),
-            typeof(DefaultPostgresIdempotencyViolationDetector), lifetimeOverride));
+            provider =>
+            {
+                var options = provider.GetRequiredService<ExecutionStrategyExtendedOptions>();
+                return new DefaultPostgresIdempotencyViolationDetector(options.IdempotencyTokenTableOptions.Value!);
+            }, lifetimeOverride));
 
         return services;
     }

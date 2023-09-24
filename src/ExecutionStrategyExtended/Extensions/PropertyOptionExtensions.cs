@@ -1,4 +1,5 @@
 ﻿using ExecutionStrategyExtended.Options;
+using ExecutionStrategyExtended.ViolationDetector;
 
 namespace ExecutionStrategyExtended.Extensions;
 
@@ -13,10 +14,15 @@ public static class PropertyOptionExtensions
     public static TReturn Configure<TOption, TReturn>(this PropertyOption<TOption, TReturn> propertyOption,
         Action<TOption> action)
     {
-        var instance = Activator.CreateInstance<TOption>();
+        var instance = propertyOption.Value ?? Activator.CreateInstance<TOption>();
         action(instance);
         propertyOption.Value = instance;
         return propertyOption.ReturnTo;
+    }
+    
+    public static TReturn UseDefault<TReturn>(this PropertyOption<IIdempotencyViolationDetector, TReturn> propertyOption, IdempotencyTokenTableOptions tableOptions)
+    {
+        
     }
 
     internal static void ThrowIfNoValue<TOption, TReturn>(this PropertyOption<TOption, TReturn> propertyOption, string name)

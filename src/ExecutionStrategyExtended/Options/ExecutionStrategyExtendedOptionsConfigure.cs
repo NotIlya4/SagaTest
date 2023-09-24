@@ -20,8 +20,8 @@ internal class ExecutionStrategyExtendedOptionsConfigure : IConfigureOptions<Exe
     public void Configure(ExecutionStrategyExtendedOptions options)
     {
         options.SystemClock.Use(new SystemClock());
-        options.IdempotencyViolationDetector.Use(_serviceProvider
-            .GetRequiredService<DefaultIdempotencyViolationDetector>());
+        options.BetweenRetriesBehavior.Use(new BetweenRetriesBehaviorOptions());
+        options.IdempotencyTokenTableOptions.Use(new IdempotencyTokenTableOptions());
         
         _action(_serviceProvider, options);
     }
