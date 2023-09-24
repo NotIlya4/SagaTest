@@ -2,18 +2,21 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MoneyService.EntityFramework;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace EfTest.EntityFramework.Migrations
+namespace MoneyService.EntityFramework.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppContextModelSnapshot : ModelSnapshot
+    [Migration("20230924175618_AfterSomeTime")]
+    partial class AfterSomeTime
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -37,7 +40,7 @@ namespace EfTest.EntityFramework.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("IdempotencyTokens", (string)null);
+                    b.ToTable("IdempotencyToken");
                 });
 
             modelBuilder.Entity("MoneyService.Models.User", b =>

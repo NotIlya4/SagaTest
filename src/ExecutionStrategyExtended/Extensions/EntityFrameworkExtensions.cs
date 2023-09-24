@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ExecutionStrategyExtended.Extensions;
 
-internal static class DbContextExtensions
+public static class EntityFrameworkExtensions
 {
-    public static async Task<TResponse> ExecuteInTransactionAsync<TDbContext, TResponse>(
+    internal static async Task<TResponse> ExecuteInTransactionAsync<TDbContext, TResponse>(
         this TrueExecutionStrategy<TDbContext> trueStrategy, Func<TDbContext, Task<TResponse>> action, 
         IsolationLevel isolationLevel) where TDbContext : DbContext
     {
@@ -32,4 +32,21 @@ internal static class DbContextExtensions
     {
         context.Entry(entity!).State = EntityState.Detached;
     }
+    
+    public static void AddIdempotencyTokens(this ModelBuilder builder, IdempotencyTokenTableOptions? options = null)
+    {
+        options ??= new IdempotencyTokenTableOptions();
+        
+        builder.Entity<IdempotencyToken>(typeBuilder =>
+        {
+            typeBuilder.Property(x => x.Id).HasMaxLength(options.MaxLength);
+            typeBuilder.ToTable(options.TableName);
+        });
+    }
+}
+
+public record IdempotencyTokenTableOptions
+{
+    public int MaxLength { get; set; } = 255;
+    public string TableName { get; set; } = "IdempotencyTokens";
 }

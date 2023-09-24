@@ -4,11 +4,11 @@ public record IdempotencyToken
 {
     public string Id { get; set; } = null!;
     public string Response { get; set; } = null!;
-    public DateTimeOffset CreateTime { get; set; }
+    public DateTime CreateTime { get; set; }
 
     protected IdempotencyToken() { }
 
-    public IdempotencyToken(string id, string response, DateTimeOffset createTime)
+    public IdempotencyToken(string id, string response, DateTime createTime)
     {
         Id = id;
         Response = response;

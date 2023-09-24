@@ -3,7 +3,7 @@ using Microsoft.Extensions.Internal;
 
 namespace ExecutionStrategyExtended.Models;
 
-public class IdempotencyFactory
+internal class IdempotencyFactory
 {
     private readonly ISystemClock _clock;
     private readonly IResponseSerializer _responseSerializer;
@@ -16,7 +16,7 @@ public class IdempotencyFactory
 
     public IdempotencyToken CreateIdempotencyToken<T>(string idempotencyToken, T response)
     {
-        var time = _clock.UtcNow;
+        var time = _clock.UtcNow.UtcDateTime;
         var rawResponse = _responseSerializer.Serialize(response);
 
         return new IdempotencyToken(idempotencyToken, rawResponse, time);
@@ -24,7 +24,7 @@ public class IdempotencyFactory
 
     public IdempotencyToken CreateIdempotencyToken(string idempotencyToken)
     {
-        var time = _clock.UtcNow;
+        var time = _clock.UtcNow.UtcDateTime;
 
         return new IdempotencyToken(idempotencyToken, "", time);
     }

@@ -15,8 +15,6 @@ services.AddSwaggerGen();
 
 var app = builder.Build();
 
-var value = app.Services.CreateScope().ServiceProvider.GetRequiredService<IdempotentTransactionOptions>();
-
 app.UseSwagger();
 app.UseSwaggerUI();
 app.MapControllers();

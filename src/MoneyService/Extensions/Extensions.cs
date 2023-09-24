@@ -1,4 +1,5 @@
-﻿using MoneyService.EntityFramework;
+﻿using ExecutionStrategyExtended.Models;
+using MoneyService.EntityFramework;
 using MoneyService.Services;
 
 namespace MoneyService.Extensions;
@@ -7,7 +8,7 @@ public static class Extensions
 {
     public static void CleanTables(this AppDbContext context)
     {
-        context.RemoveRange(context.Idempotencies.ToList());
+        context.RemoveRange(context.Set<IdempotencyToken>().ToList());
         context.RemoveRange(context.Users.ToList());
         context.SaveChanges();
     }

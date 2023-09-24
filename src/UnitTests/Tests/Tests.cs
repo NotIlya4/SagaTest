@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using ExecutionStrategyExtended.Models;
+using Microsoft.Extensions.DependencyInjection;
 using MoneyService.EntityFramework;
 using MoneyService.Extensions;
 using MoneyService.Models;
@@ -23,16 +24,15 @@ public class Tests : IDisposable, IClassFixture<TestFixture>
     }
 
     [Fact]
-    public void Test()
+    public async Task Test()
     {
-        _context.Users.Add(new User(0, 123, false));
-        _context.SaveChanges();
-    }
-    
-    [Fact]
-    public void Test2()
-    {
+        _context.Add(new IdempotencyToken("a", "", DateTime.UtcNow));
+        await _context.SaveChangesAsync();
         
+        _context.ChangeTracker.Clear();
+        
+        _context.Add(new IdempotencyToken("a", "", DateTime.UtcNow));
+        await _context.SaveChangesAsync();
     }
     
     public void Dispose()

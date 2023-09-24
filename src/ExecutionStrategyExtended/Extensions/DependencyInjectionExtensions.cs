@@ -9,11 +9,6 @@ namespace ExecutionStrategyExtended.Extensions;
 
 public static class DependencyInjectionExtensions
 {
-    public static void AddIdempotentTransactionModels(this ModelBuilder builder)
-    {
-        builder.Entity<IdempotencyToken>().Property(x => x.Id).HasMaxLength(255);
-    }
-
     public static IServiceCollection AddIdempotentTransactionServices<TDbContext>(this IServiceCollection services, 
         ServiceLifetime lifetimeOverride = ServiceLifetime.Scoped) where TDbContext : DbContext
     {
