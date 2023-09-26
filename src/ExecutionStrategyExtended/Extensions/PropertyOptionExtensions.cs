@@ -20,7 +20,7 @@ public static class PropertyOptionExtensions
         return propertyOption.ReturnTo;
     }
     
-    public static TReturn UseDefault<TReturn>(this PropertyOption<IIdempotencyViolationDetector, TReturn> propertyOption, IdempotencyTokenTableOptions tableOptions)
+    public static TReturn UseDefault<TReturn>(this PropertyOption<IIdempotenceViolationDetector, TReturn> propertyOption, IdempotencyTokenTableOptions tableOptions)
     {
         
     }

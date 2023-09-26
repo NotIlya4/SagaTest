@@ -11,12 +11,12 @@ namespace ExecutionStrategyExtended;
 internal class ExecutionStrategyExtended<TDbContext> : IExecutionStrategyExtended<TDbContext> where TDbContext : DbContext
 {
     private readonly IdempotencyFactory _factory;
-    private readonly IIdempotencyViolationDetector _violationDetector;
+    private readonly IIdempotenceViolationDetector _violationDetector;
     private readonly IResponseSerializer _responseSerializer;
     private readonly TrueExecutionStrategyFactory<TDbContext> _executionStrategyFactory;
 
     public ExecutionStrategyExtended(IdempotencyFactory factory,
-        IIdempotencyViolationDetector violationDetector, IResponseSerializer responseSerializer,
+        IIdempotenceViolationDetector violationDetector, IResponseSerializer responseSerializer,
         TrueExecutionStrategyFactory<TDbContext> executionStrategyFactory)
     {
         _factory = factory;

@@ -1,10 +1,10 @@
 ﻿namespace ExecutionStrategyExtended.ViolationDetector;
 
-public class DefaultIdempotencyViolationDetector : IIdempotencyViolationDetector
+public class DefaultDetector : IIdempotenceViolationDetector
 {
-    private readonly IEnumerable<IIdempotencyViolationDetector> _detectors;
+    private readonly IEnumerable<IIdempotenceViolationDetector> _detectors;
 
-    public DefaultIdempotencyViolationDetector(IEnumerable<IIdempotencyViolationDetector> detectors)
+    public DefaultDetector(IEnumerable<IIdempotenceViolationDetector> detectors)
     {
         _detectors = detectors;
     }

@@ -1,14 +1,15 @@
 ﻿using ExecutionStrategyExtended.Extensions;
+using ExecutionStrategyExtended.Options;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
 namespace ExecutionStrategyExtended.ViolationDetector;
 
-public class DefaultPostgresIdempotencyViolationDetector : IIdempotencyViolationDetector
+public class DefaultPostgresDetector : IIdempotenceViolationDetector
 {
     private readonly IdempotencyTokenTableOptions _tableOptions;
 
-    public DefaultPostgresIdempotencyViolationDetector(IdempotencyTokenTableOptions tableOptions)
+    public DefaultPostgresDetector(IdempotencyTokenTableOptions tableOptions)
     {
         _tableOptions = tableOptions;
     }

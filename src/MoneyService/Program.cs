@@ -4,6 +4,7 @@ using MoneyService.EntityFramework;
 using MoneyService.ExtendedExecutionStrategyImpls;
 using MoneyService.Extensions;
 using MoneyService.Services;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
@@ -16,6 +17,8 @@ services.AddExecutionStrategyExtended<AppDbContext>(options =>
 {
     options.ResponseSerializer.Use(new ResponseSerializer());
 });
+
+LoggerConfiguration loggerConfiguration = new LoggerConfiguration();
 
 services.AddControllers();
 services.AddEndpointsApiExplorer();

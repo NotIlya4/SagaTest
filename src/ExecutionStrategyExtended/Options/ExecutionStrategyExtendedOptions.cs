@@ -11,14 +11,14 @@ public class ExecutionStrategyExtendedOptions
     {
         SystemClock = new StrategyPropertyOption<ISystemClock>(this);
         ResponseSerializer = new StrategyPropertyOption<IResponseSerializer>(this);
-        IdempotencyViolationDetector = new StrategyPropertyOption<IIdempotencyViolationDetector>(this);
+        IdempotencyViolationDetector = new StrategyPropertyOption<IIdempotenceViolationDetector>(this);
         BetweenRetriesBehavior = new StrategyPropertyOption<BetweenRetriesBehaviorOptions>(this);
         IdempotencyTokenTableOptions = new StrategyPropertyOption<IdempotencyTokenTableOptions>(this);
     }
 
     public StrategyPropertyOption<ISystemClock> SystemClock { get; }
     public StrategyPropertyOption<IResponseSerializer> ResponseSerializer { get; }
-    public StrategyPropertyOption<IIdempotencyViolationDetector> IdempotencyViolationDetector { get; }
+    public StrategyPropertyOption<IIdempotenceViolationDetector> IdempotencyViolationDetector { get; }
     public StrategyPropertyOption<BetweenRetriesBehaviorOptions> BetweenRetriesBehavior { get; }
     public StrategyPropertyOption<IdempotencyTokenTableOptions> IdempotencyTokenTableOptions { get; }
 

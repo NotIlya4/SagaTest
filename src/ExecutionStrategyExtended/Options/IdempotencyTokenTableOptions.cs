@@ -1,4 +1,4 @@
-﻿namespace ExecutionStrategyExtended.Extensions;
+﻿namespace ExecutionStrategyExtended.Options;
 
 public record IdempotencyTokenTableOptions
 {

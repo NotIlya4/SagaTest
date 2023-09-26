@@ -1,6 +1,6 @@
 ﻿namespace ExecutionStrategyExtended.ViolationDetector;
 
-public interface IIdempotencyViolationDetector
+public interface IIdempotenceViolationDetector
 {
     bool IsUniqueConstraintViolation(Exception e);
 }
