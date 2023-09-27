@@ -1,5 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using MoneyService.EntityFramework;
+using NotIlya.SqlConnectionString.Extensions;
 using Npgsql;
 
 namespace MoneyService.Extensions;
@@ -11,11 +13,16 @@ public static class ServiceCollectionExtensions
         return config.GetSection("PostgresConn").Get<NpgsqlConnectionStringBuilder>()!.ToString();
     }
     
-    public static void AddAppContext(this IServiceCollection services, string conn)
+    public static string GetMssqlConn(this IConfiguration config)
+    {
+        return config.GetSqlConnectionString("MssqlConn");
+    }
+    
+    public static void AddAppContext(this IServiceCollection services, DbConfigurator configurator)
     {
         services.AddDbContextFactory<AppDbContext>(builder =>
         {
-            builder.ConfigureAppContext(conn);
+            configurator.ConfigureDbContextOptionsBuilder(builder);
         });
     }
 

@@ -1,0 +1,14 @@
+services:
+  sql-server:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    user: root
+    environment:
+      SA_PASSWORD: 1tsJusT@S@mpleP@ssword!
+      ACCEPT_EULA: Y
+    ports:
+      - "1433:1433"
+    volumes:
+      - sql-data-test:/var/opt/mssql/data
+
+volumes:
+  sql-data-test:

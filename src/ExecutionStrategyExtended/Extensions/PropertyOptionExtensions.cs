@@ -19,11 +19,6 @@ public static class PropertyOptionExtensions
         propertyOption.Value = instance;
         return propertyOption.ReturnTo;
     }
-    
-    public static TReturn UseDefault<TReturn>(this PropertyOption<IIdempotenceViolationDetector, TReturn> propertyOption, IdempotencyTokenTableOptions tableOptions)
-    {
-        
-    }
 
     internal static void ThrowIfNoValue<TOption, TReturn>(this PropertyOption<TOption, TReturn> propertyOption, string name)
     {

@@ -1,4 +1,5 @@
-﻿using ExecutionStrategyExtended;
+﻿using System.Data;
+using ExecutionStrategyExtended;
 using ExecutionStrategyExtended.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,7 +23,7 @@ public class Tests : IDisposable, IClassFixture<TestFixture>
         _fixture = fixture;
         _scope = fixture.CreateScope();
         _services = _scope.ServiceProvider;
-        _strategy = _services.GetRequiredService<IExecutionStrategyExtended<AppDbContext>>();
+        // _strategy = _services.GetRequiredService<IExecutionStrategyExtended<AppDbContext>>();
         _context = _services.GetAppContext();
         _fixture.Bootstrapper.Clean();
     }
@@ -30,22 +31,23 @@ public class Tests : IDisposable, IClassFixture<TestFixture>
     [Fact]
     public async Task Test()
     {
-        bool isThrown = false;
-        await _strategy.ExecuteAsync(async context =>
+        _context.Add(new User(0, 123, false));
+        await _context.SaveChangesAsync();
+        _context.ChangeTracker.Clear();
+
+        var strategy = _context.Database.CreateExecutionStrategy();
+        await strategy.ExecuteAsync(async () =>
         {
+            await using var transaction = await _context.Database.BeginTransactionAsync(IsolationLevel.Serializable);
+            await _context.Users.ToListAsync();
+
             var user = new User(0, 123, false);
 
-            context.Users.Add(user);
+            _context.Users.Add(user);
 
-            if (!isThrown)
-            {
-                throw new TimeoutException();
-            }
-
-            await context.SaveChangesAsync();
-            
-            return new object();
-        }, _context);
+            await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
+        });
         
         _context.ChangeTracker.Clear();
         var users = await _context.Users.ToListAsync();

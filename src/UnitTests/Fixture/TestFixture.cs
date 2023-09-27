@@ -18,7 +18,7 @@ public class TestFixture : IDisposable
 
     public TestFixture()
     {
-        var bootstrapperBuilder = new PostgresBootstrapperBuilder(PostgresBootstrapperType.LocalContainer, new PostgresConnOptions());
+        var bootstrapperBuilder = new PostgresBootstrapperBuilder(PostgresBootstrapperType.ExistingDb, new PostgresConnOptions());
         
         Factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
         {

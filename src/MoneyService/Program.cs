@@ -1,5 +1,6 @@
 using ExecutionStrategyExtended.Extensions;
 using ExecutionStrategyExtended.Options;
+using MoneyService;
 using MoneyService.EntityFramework;
 using MoneyService.ExtendedExecutionStrategyImpls;
 using MoneyService.Extensions;
@@ -9,16 +10,11 @@ using Serilog;
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
 var services = builder.Services;
+var configurator = new DbConfigurator(DbType.Mssql, config);
 
-services.AddAppContext(config.GetPostgresConn());
+services.AddAppContext(configurator);
 services.AddScoped<UserCrud>();
 
-services.AddExecutionStrategyExtended<AppDbContext>(options =>
-{
-    options.ResponseSerializer.Use(new ResponseSerializer());
-});
-
-LoggerConfiguration loggerConfiguration = new LoggerConfiguration();
 
 services.AddControllers();
 services.AddEndpointsApiExplorer();
