@@ -3,44 +3,85 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ExecutionStrategyExtended.BetweenRetries;
 
-internal class DbContextProviderBetweenReties<TDbContext> where TDbContext : DbContext
+internal class BetweenRetiesStrategyFactory<TDbContext> where TDbContext : DbContext
 {
-    private readonly TDbContext _mainContext;
-    private readonly DbContextRetryPolicy _policy;
-    private readonly DbContextFactoryBetweenReties<TDbContext> _factoryBetweenReties;
-    public TDbContext MainContext { get => _mainContext; }
+    public IBetweenRetiesStrategy<TDbContext> Create()
+}
 
-    public DbContextProviderBetweenReties(TDbContext mainContext, DbContextRetryPolicy policy, DbContextFactoryBetweenReties<TDbContext> factoryBetweenReties)
+internal interface IBetweenRetiesStrategy<TDbContext> where TDbContext : DbContext
+{
+    Task<TDbContext> ProvideDbContextForRetry();
+}
+
+internal class CreateNewDbContextStrategy<TDbContext> : IBetweenRetiesStrategy<TDbContext> where TDbContext : DbContext
+{
+    private readonly bool _disposePreviousContext;
+    private readonly IDbContextFactory<TDbContext> _factory;
+    private TDbContext? _previousContext;
+
+    public CreateNewDbContextStrategy(bool disposePreviousContext, IDbContextFactory<TDbContext> factory)
     {
-        _mainContext = mainContext;
-        _policy = policy;
-        _factoryBetweenReties = factoryBetweenReties;
+        _disposePreviousContext = disposePreviousContext;
+        _factory = factory;
+    }
+    
+    public async Task<TDbContext> ProvideDbContextForRetry()
+    {
+        await DisposePreviousContext();
+
+        var context = await _factory.CreateDbContextAsync();
+        _previousContext = context;
+
+        return context;
     }
 
-    public async Task<TDbContext> ProvideDbContext()
+    private async Task DisposePreviousContext()
     {
-        return _policy switch
+        if (!_disposePreviousContext)
         {
-            DbContextRetryPolicy.UseSame => ProvideForSame(),
-            DbContextRetryPolicy.ClearChangeTracker => ProvideForClear(),
-            DbContextRetryPolicy.CreateNew => await ProvideForNew(),
-            _ => throw new NotImplementedException()
-        };
-    }
+            _previousContext = null;
+            return;
+        }
 
-    private TDbContext ProvideForSame()
-    {
-        return _mainContext;
-    }
+        if (_previousContext is null)
+        {
+            return;
+        }
 
-    private TDbContext ProvideForClear()
-    {
-        _mainContext.ChangeTracker.Clear();
-        return _mainContext;
+        await _previousContext.DisposeAsync();
+        _previousContext = null;
     }
+}
 
-    private async Task<TDbContext> ProvideForNew()
+internal class ClearChangeTrackerStrategy<TDbContext> : IBetweenRetiesStrategy<TDbContext>
+    where TDbContext : DbContext
+{
+    private readonly TDbContext _context;
+
+    public ClearChangeTrackerStrategy(TDbContext context)
     {
-        return await _factoryBetweenReties.Create();
+        _context = context;
+    }
+    
+    public Task<TDbContext> ProvideDbContextForRetry()
+    {
+        _context.ChangeTracker.Clear();
+        return Task.FromResult(_context);
+    }
+}
+
+internal class UseSameDbContextStrategy<TDbContext> : IBetweenRetiesStrategy<TDbContext>
+    where TDbContext : DbContext
+{
+    private readonly TDbContext _context;
+
+    public UseSameDbContextStrategy(TDbContext context)
+    {
+        _context = context;
+    }
+    
+    public Task<TDbContext> ProvideDbContextForRetry()
+    {
+        return Task.FromResult(_context);
     }
 }
