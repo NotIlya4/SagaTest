@@ -1,5 +1,4 @@
-﻿using ExecutionStrategyExtended.Extensions;
-using ExecutionStrategyExtended.Options;
+﻿using ExecutionStrategyExtended.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
@@ -7,11 +6,11 @@ namespace ExecutionStrategyExtended.ViolationDetector;
 
 public class DefaultPostgresDetector : IIdempotenceViolationDetector
 {
-    private readonly IdempotencyTokenTableOptions _tableOptions;
+    private readonly IdempotencyTokenTableConfiguration _tableConfiguration;
 
-    public DefaultPostgresDetector(IdempotencyTokenTableOptions tableOptions)
+    public DefaultPostgresDetector(IdempotencyTokenTableConfiguration tableConfiguration)
     {
-        _tableOptions = tableOptions;
+        _tableConfiguration = tableConfiguration;
     }
     
     public bool IsUniqueConstraintViolation(Exception e)
@@ -29,8 +28,8 @@ public class DefaultPostgresDetector : IIdempotenceViolationDetector
 
     private bool IsUniqueConstraintViolationInternal(PostgresException postgresException)
     {
-        return postgresException.ConstraintName == _tableOptions.PrimaryKeyConstraintName
-               && postgresException.TableName == _tableOptions.TableName
+        return postgresException.ConstraintName == _tableConfiguration.PrimaryKeyConstraintName
+               && postgresException.TableName == _tableConfiguration.TableName
                && postgresException.SqlState == PostgresErrorCodes.UniqueViolation;
     }
 }

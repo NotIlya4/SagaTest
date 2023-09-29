@@ -1,7 +1,7 @@
 ﻿using System.Data;
+using ExecutionStrategyExtended.Configuration;
 using ExecutionStrategyExtended.ExecutionStrategy;
 using ExecutionStrategyExtended.Models;
-using ExecutionStrategyExtended.Options;
 using Microsoft.EntityFrameworkCore;
 
 namespace ExecutionStrategyExtended.Extensions;
@@ -34,9 +34,9 @@ public static class EntityFrameworkExtensions
         context.Entry(entity!).State = EntityState.Detached;
     }
     
-    public static void AddIdempotencyTokens(this ModelBuilder builder, IdempotencyTokenTableOptions? options = null)
+    public static void AddIdempotencyTokens(this ModelBuilder builder, IdempotencyTokenTableConfiguration? options = null)
     {
-        options ??= new IdempotencyTokenTableOptions();
+        options ??= new IdempotencyTokenTableConfiguration();
         
         builder.Entity<IdempotencyToken>(typeBuilder =>
         {

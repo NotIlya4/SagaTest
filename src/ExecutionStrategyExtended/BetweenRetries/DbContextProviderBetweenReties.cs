@@ -1,7 +1,7 @@
 ﻿using ExecutionStrategyExtended.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace ExecutionStrategyExtended.ExecutionStrategy;
+namespace ExecutionStrategyExtended.BetweenRetries;
 
 internal class DbContextProviderBetweenReties<TDbContext> where TDbContext : DbContext
 {

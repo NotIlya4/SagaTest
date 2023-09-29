@@ -1,5 +1,4 @@
-﻿using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using MoneyService.EntityFramework;
 using NotIlya.SqlConnectionString.Extensions;
 using Npgsql;
@@ -18,16 +17,11 @@ public static class ServiceCollectionExtensions
         return config.GetSqlConnectionString("MssqlConn");
     }
     
-    public static void AddAppContext(this IServiceCollection services, DbConfigurator configurator)
+    public static void AddAppContext(this IServiceCollection services, string conn)
     {
         services.AddDbContextFactory<AppDbContext>(builder =>
         {
-            configurator.ConfigureDbContextOptionsBuilder(builder);
+            builder.UseNpgsql(conn, optionsBuilder => optionsBuilder.EnableRetryOnFailure());
         });
-    }
-
-    private static void ConfigureAppContext(this DbContextOptionsBuilder builder, string conn)
-    {
-        builder.UseNpgsql(conn, b => b.EnableRetryOnFailure());
     }
 }

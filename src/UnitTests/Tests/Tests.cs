@@ -1,6 +1,5 @@
 ﻿using System.Data;
 using ExecutionStrategyExtended;
-using ExecutionStrategyExtended.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MoneyService.EntityFramework;
@@ -39,11 +38,12 @@ public class Tests : IDisposable, IClassFixture<TestFixture>
         await strategy.ExecuteAsync(async () =>
         {
             await using var transaction = await _context.Database.BeginTransactionAsync(IsolationLevel.Serializable);
+
             await _context.Users.ToListAsync();
 
             var user = new User(0, 123, false);
 
-            _context.Users.Add(user);
+            _context.Add(user);
 
             await _context.SaveChangesAsync();
             await transaction.CommitAsync();

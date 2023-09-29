@@ -1,5 +1,4 @@
 ﻿using ExecutionStrategyExtended.Extensions;
-using ExecutionStrategyExtended.Models;
 using Microsoft.EntityFrameworkCore;
 using MoneyService.Models;
 

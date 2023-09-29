@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace ExecutionStrategyExtended.ExecutionStrategy;
+namespace ExecutionStrategyExtended.BetweenRetries;
 
 internal class DbContextFactoryBetweenReties<TDbContext> where TDbContext : DbContext
 {
