@@ -1,10 +1,10 @@
 ﻿namespace ExecutionStrategyExtended;
 
-internal class IdempotencyTokenAddResult
+internal class IdempotencyTokenSaveResult
 {
     public bool IsAlreadyExists { get; }
 
-    public IdempotencyTokenAddResult(bool isAlreadyExists)
+    public IdempotencyTokenSaveResult(bool isAlreadyExists)
     {
         IsAlreadyExists = isAlreadyExists;
     }
