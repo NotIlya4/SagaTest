@@ -3,12 +3,12 @@ using Microsoft.EntityFrameworkCore.Storage;
 
 namespace ExecutionStrategyExtended.BetweenRetries;
 
-internal class UseSameDbContextStrategy<TDbContext> : IBetweenRetiesStrategy<TDbContext>
+internal class UseSameDbContextBehavior<TDbContext> : IBetweenRetryDbContextBehavior<TDbContext>
     where TDbContext : DbContext
 {
     private readonly TDbContext _context;
 
-    public UseSameDbContextStrategy(TDbContext context)
+    public UseSameDbContextBehavior(TDbContext context)
     {
         _context = context;
     }

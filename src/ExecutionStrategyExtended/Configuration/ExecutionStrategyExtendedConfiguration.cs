@@ -17,10 +17,10 @@ internal record ExecutionStrategyExtendedConfiguration : IExecutionStrategyPubli
             new BuilderProperty<ISystemClock, IExecutionStrategyPublicConfiguration>(clock => SystemClock = clock, this,
                 SystemClock);
         
-        BetweenRetriesBehaviorConfigurationBuilder =
-            new BuilderProperty<BetweenRetriesBehaviorConfiguration, IExecutionStrategyPublicConfiguration>(
-                configuration => BetweenRetriesBehaviorConfiguration = configuration, this,
-                BetweenRetriesBehaviorConfiguration);
+        BetweenRetryDbContextBehaviorConfigurationBuilder =
+            new BuilderProperty<BetweenRetryDbContextBehaviorConfiguration, IExecutionStrategyPublicConfiguration>(
+                configuration => BetweenRetryDbContextBehaviorConfiguration = configuration, this,
+                BetweenRetryDbContextBehaviorConfiguration);
         
         IdempotenceViolationDetectorBuilder =
             new BuilderProperty<IIdempotenceViolationDetector, IExecutionStrategyPublicConfiguration>(
@@ -31,12 +31,12 @@ internal record ExecutionStrategyExtendedConfiguration : IExecutionStrategyPubli
     }
     
     public IBuilderPropertySetter<ISystemClock, IExecutionStrategyPublicConfiguration> SystemClockBuilder { get; }
-    public IBuilderPropertySetterConfig<BetweenRetriesBehaviorConfiguration, IExecutionStrategyPublicConfiguration> BetweenRetriesBehaviorConfigurationBuilder { get; }
+    public IBuilderPropertySetterConfig<BetweenRetryDbContextBehaviorConfiguration, IExecutionStrategyPublicConfiguration> BetweenRetryDbContextBehaviorConfigurationBuilder { get; }
     public IBuilderPropertySetter<IIdempotenceViolationDetector, IExecutionStrategyPublicConfiguration> IdempotenceViolationDetectorBuilder { get; }
     public IBuilderPropertySetter<IResponseSerializer, IExecutionStrategyPublicConfiguration> ResponseSerializerBuilder { get; }
 
     public ISystemClock SystemClock { get; set; } = new SystemClock();
-    public BetweenRetriesBehaviorConfiguration BetweenRetriesBehaviorConfiguration { get; set; } = new();
+    public BetweenRetryDbContextBehaviorConfiguration BetweenRetryDbContextBehaviorConfiguration { get; set; } = new();
     public IIdempotenceViolationDetector IdempotenceViolationDetector
     {
         get => _idempotenceViolationDetector!;

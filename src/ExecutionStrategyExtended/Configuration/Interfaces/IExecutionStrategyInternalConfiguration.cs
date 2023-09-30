@@ -8,7 +8,7 @@ namespace ExecutionStrategyExtended.Configuration;
 internal interface IExecutionStrategyInternalConfiguration
 {
     ISystemClock SystemClock { get; }
-    BetweenRetriesBehaviorConfiguration BetweenRetriesBehaviorConfiguration { get; }
+    BetweenRetryDbContextBehaviorConfiguration BetweenRetryDbContextBehaviorConfiguration { get; }
     IIdempotenceViolationDetector IdempotenceViolationDetector { get; }
     IResponseSerializer ResponseSerializer { get; }
 }

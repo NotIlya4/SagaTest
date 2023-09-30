@@ -3,12 +3,12 @@ using Microsoft.EntityFrameworkCore.Storage;
 
 namespace ExecutionStrategyExtended.BetweenRetries;
 
-internal class ClearChangeTrackerStrategy<TDbContext> : IBetweenRetiesStrategy<TDbContext>
+internal class ClearChangeTrackerBehavior<TDbContext> : IBetweenRetryDbContextBehavior<TDbContext>
     where TDbContext : DbContext
 {
     private readonly TDbContext _context;
 
-    public ClearChangeTrackerStrategy(TDbContext context)
+    public ClearChangeTrackerBehavior(TDbContext context)
     {
         _context = context;
     }

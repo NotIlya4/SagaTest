@@ -9,7 +9,7 @@ namespace ExecutionStrategyExtended.Configuration;
 public interface IExecutionStrategyPublicConfiguration
 {
     IBuilderPropertySetter<ISystemClock, IExecutionStrategyPublicConfiguration> SystemClockBuilder { get; }
-    IBuilderPropertySetterConfig<BetweenRetriesBehaviorConfiguration, IExecutionStrategyPublicConfiguration> BetweenRetriesBehaviorConfigurationBuilder { get; }
+    IBuilderPropertySetterConfig<BetweenRetryDbContextBehaviorConfiguration, IExecutionStrategyPublicConfiguration> BetweenRetryDbContextBehaviorConfigurationBuilder { get; }
     IBuilderPropertySetter<IIdempotenceViolationDetector, IExecutionStrategyPublicConfiguration> IdempotenceViolationDetectorBuilder { get; }
     IBuilderPropertySetter<IResponseSerializer, IExecutionStrategyPublicConfiguration> ResponseSerializerBuilder { get; }
 }

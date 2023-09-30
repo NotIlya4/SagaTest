@@ -1,0 +1,65 @@
+﻿using System.Data;
+using ExecutionStrategyExtended.Configuration;
+using ExecutionStrategyExtended.Models;
+using Microsoft.EntityFrameworkCore;
+
+namespace ExecutionStrategyExtended;
+
+internal class ExecutionStrategyExtended<TDbContext> : IExecutionStrategyExtended<TDbContext>
+    where TDbContext : DbContext
+{
+    private readonly MainFactory _factory;
+    private readonly Lazy<IdempotencyTokenManager> _tokenManager;
+
+    public ExecutionStrategyExtended(MainFactory factory)
+    {
+        _factory = factory;
+        _tokenManager = new Lazy<IdempotencyTokenManager>(() => _factory.IdempotencyToken.CreateManager());
+    }
+
+    public async Task<TResponse> ExecuteAsync<TResponse>(Func<TDbContext, Task<TResponse>> action,
+        TDbContext mainContext)
+    {
+        var betweenRetriesStrategy = _factory.ExecutionStrategy.CreateBetweenRetriesStrategy(mainContext);
+        var strategy = betweenRetriesStrategy.CreateExecutionStrategy();
+        int retryNumber = 1;
+
+        return await strategy.ExecuteAsync(
+            async () =>
+            {
+                var context = await betweenRetriesStrategy.ProvideDbContextForRetry(retryNumber);
+                retryNumber += 1;
+                return await action(context);
+            });
+    }
+
+    public async Task<TResponse> ExecuteInTransactionAsync<TResponse>(Func<TDbContext, Task<TResponse>> action,
+        TDbContext mainContext, IsolationLevel isolationLevel)
+    {
+        return await ExecuteAsync(async context =>
+        {
+            await using var transaction = await context.Database.BeginTransactionAsync(isolationLevel);
+
+            var response = await action(context);
+
+            await transaction.CommitAsync();
+
+            return response;
+        }, mainContext);
+    }
+
+    public async Task<TResponse> ExecuteInIdempotentTransactionAsync<TResponse>(
+        Func<TDbContext, Task<TResponse>> action,
+        TDbContext mainContext, string idempotencyToken, IsolationLevel isolationLevel)
+    {
+        
+        var token = _tokenManager.Value.CreateIdempotencyToken(idempotencyToken);
+
+        return await ExecuteInTransactionAsync(async context =>
+            {
+                var service = _factory.IdempotencyToken.CreateService(context);
+                return await service.HandleAction(async () => await action(context), token);
+            },
+            mainContext, isolationLevel);
+    }
+}

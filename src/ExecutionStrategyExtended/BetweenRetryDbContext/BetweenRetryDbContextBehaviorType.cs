@@ -1,6 +1,6 @@
 ﻿namespace ExecutionStrategyExtended.Models;
 
-public enum DbContextRetryPolicy
+public enum BetweenRetryDbContextBehaviorType
 {
     UseSame,
     ClearChangeTracker,

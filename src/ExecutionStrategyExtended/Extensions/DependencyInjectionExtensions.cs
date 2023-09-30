@@ -1,6 +1,4 @@
 ﻿using ExecutionStrategyExtended.Configuration;
-using ExecutionStrategyExtended.Configuration.Builders;
-using ExecutionStrategyExtended.ExecutionStrategy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -41,15 +39,11 @@ public static class DependencyInjectionExtensions
 
         services.Add(new ServiceDescriptor(typeof(MainFactory), lifetimeOverride));
 
-        services.Add(new ServiceDescriptor(typeof(TrueExecutionStrategyFactory<TDbContext>),
-            provider => provider.GetRequiredService<MainFactory>()
-                .CreateTrueExecutionStrategyFactory<TDbContext>(),
-            lifetimeOverride));
-
         services.Add(new ServiceDescriptor(typeof(IExecutionStrategyExtended<TDbContext>),
-            provider => provider.GetRequiredService<MainFactory>()
-                .CreateExecutionStrategyExtended<TDbContext>(),
+            typeof(ExecutionStrategyExtended<TDbContext>),
             lifetimeOverride));
+        
+        services.Add(new ServiceDescriptor(typeof(ExecutionStrategyExtended<TDbContext>), lifetimeOverride));
 
         return services;
     }

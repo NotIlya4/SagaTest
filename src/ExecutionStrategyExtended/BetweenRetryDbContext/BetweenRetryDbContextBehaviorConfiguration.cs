@@ -2,8 +2,8 @@
 
 namespace ExecutionStrategyExtended.BetweenRetries;
 
-public class BetweenRetiesStrategyConfiguration
+public class BetweenRetryDbContextBehaviorConfiguration
 {
-    public DbContextRetryPolicy BetweenRetiesPolicy { get; set; }
+    public BetweenRetryDbContextBehaviorType BetweenRetryDbContextBehaviorType { get; set; }
     public bool DisposePreviousContext { get; set; }
 }
