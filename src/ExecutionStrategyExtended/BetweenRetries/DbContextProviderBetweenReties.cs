@@ -3,9 +3,38 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ExecutionStrategyExtended.BetweenRetries;
 
-internal class BetweenRetiesStrategyFactory<TDbContext> where TDbContext : DbContext
+public static class BetweenRetriesStrategies
 {
-    public IBetweenRetiesStrategy<TDbContext> Create()
+    public static BetweenRetiesStrategyConfiguration CreateNewDbContextStrategy(bool disposePreviousContext = false)
+    {
+        return new BetweenRetiesStrategyConfiguration()
+        {
+            BetweenRetiesPolicy = DbContextRetryPolicy.CreateNew,
+            DisposePreviousContext = disposePreviousContext
+        };
+    }
+
+    public static BetweenRetiesStrategyConfiguration ClearChangeTrackerStrategy()
+    {
+        return new BetweenRetiesStrategyConfiguration()
+        {
+            BetweenRetiesPolicy = DbContextRetryPolicy.ClearChangeTracker
+        };
+    }
+    
+    public static BetweenRetiesStrategyConfiguration UseSameDbContextStrategy()
+    {
+        return new BetweenRetiesStrategyConfiguration()
+        {
+            BetweenRetiesPolicy = DbContextRetryPolicy.UseSame
+        };
+    }
+}
+
+public class BetweenRetiesStrategyConfiguration
+{
+    public DbContextRetryPolicy BetweenRetiesPolicy { get; set; }
+    public bool DisposePreviousContext { get; set; }
 }
 
 internal interface IBetweenRetiesStrategy<TDbContext> where TDbContext : DbContext
