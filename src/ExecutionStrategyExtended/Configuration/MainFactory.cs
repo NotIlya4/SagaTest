@@ -18,9 +18,9 @@ internal class MainFactory
         _provider = provider;
     }
 
-    public IdempotencyFactory CreateIdempotencyFactory()
+    public IdempotencyTokenManager CreateIdempotencyFactory()
     {
-        return new IdempotencyFactory(_configuration.SystemClock, _configuration.ResponseSerializer);
+        return new IdempotencyTokenManager(_configuration.SystemClock, _configuration.ResponseSerializer);
     }
 
     public DbContextFactoryBetweenReties<TDbContext> CreateDbContextFactoryBetweenReties<TDbContext>()

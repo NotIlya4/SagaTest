@@ -9,15 +9,15 @@ namespace ExecutionStrategyExtended;
 internal class ExecutionStrategyExtended<TDbContext> : IExecutionStrategyExtended<TDbContext>
     where TDbContext : DbContext
 {
-    private readonly IdempotencyFactory _factory;
+    private readonly IdempotencyTokenManager _tokenManager;
     private readonly TrueExecutionStrategyFactory<TDbContext> _executionStrategyFactory;
     private readonly IdempotencyTokenRepositoryFactory _idempotencyTokenRepositoryFactory;
 
-    public ExecutionStrategyExtended(IdempotencyFactory factory,
+    public ExecutionStrategyExtended(IdempotencyTokenManager tokenManager,
         TrueExecutionStrategyFactory<TDbContext> executionStrategyFactory,
         IdempotencyTokenRepositoryFactory idempotencyTokenRepositoryFactory)
     {
-        _factory = factory;
+        _tokenManager = tokenManager;
         _executionStrategyFactory = executionStrategyFactory;
         _idempotencyTokenRepositoryFactory = idempotencyTokenRepositoryFactory;
     }
@@ -40,7 +40,7 @@ internal class ExecutionStrategyExtended<TDbContext> : IExecutionStrategyExtende
         Func<TDbContext, Task<TResponse>> action,
         TDbContext mainContext, string idempotencyToken, IsolationLevel isolationLevel)
     {
-        var token = _factory.CreateIdempotencyToken(idempotencyToken);
+        var token = _tokenManager.CreateIdempotencyToken(idempotencyToken);
 
         return await ExecuteInTransactionAsync(async context =>
             {
