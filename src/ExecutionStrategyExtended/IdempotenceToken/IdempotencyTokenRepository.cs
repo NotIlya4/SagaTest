@@ -17,39 +17,35 @@ internal class IdempotencyTokenRepository
 
     public async Task<IdempotencyTokenSaveResult> AddAndSaveToken(IdempotencyToken idempotencyToken)
     {
-        _context.IdempotencyTokens().Add(idempotencyToken);
-        try
+        return await WithDetachToken(async () =>
         {
-            await _context.SaveChangesAsync();
-        }
-        catch (Exception e)
-        {
-            if (_violationDetector.IsUniqueConstraintViolation(e))
+            _context.IdempotencyTokens().Add(idempotencyToken);
+            try
             {
-                return new IdempotencyTokenSaveResult(true);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                if (_violationDetector.IsUniqueConstraintViolation(e))
+                {
+                    return new IdempotencyTokenSaveResult(true);
+                }
+
+                throw;
             }
 
-            throw;
-        }
-        finally
-        {
-            DetachToken(idempotencyToken);
-        }
-
-        return new IdempotencyTokenSaveResult(false);
+            return new IdempotencyTokenSaveResult(false);
+        }, idempotencyToken);
     }
 
     public async Task UpdateAndSaveToken(IdempotencyToken idempotencyToken)
     {
-        _context.Update(idempotencyToken);
-        try
+        await WithDetachToken(async () =>
         {
+            _context.Update(idempotencyToken);
             await _context.SaveChangesAsync();
-        }
-        finally
-        {
-            DetachToken(idempotencyToken);
-        }
+            return true;
+        }, idempotencyToken);
     }
 
     public async Task<IdempotencyToken> GetFreshToken(IdempotencyToken idempotencyToken)
@@ -60,8 +56,15 @@ internal class IdempotencyTokenRepository
             .SingleAsync(x => x.Id == idempotencyToken.Id);
     }
 
-    public void DetachToken(IdempotencyToken idempotencyToken)
+    private async Task<TResult> WithDetachToken<TResult>(Func<Task<TResult>> action, IdempotencyToken token)
     {
-        _context.Entry(idempotencyToken).State = EntityState.Detached;
+        try
+        {
+            return await action();
+        }
+        finally
+        {
+            _context.Entry(token).State = EntityState.Detached;
+        }
     }
 }

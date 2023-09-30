@@ -17,7 +17,7 @@ internal class ExecutionStrategyFactoryPart
         _provider = provider;
     }
     
-    public IDbContextRetrier<TDbContext> CreateBetweenRetriesStrategy<TDbContext>(TDbContext mainContext) where TDbContext : DbContext
+    public IDbContextRetrier<TDbContext> CreateDbContextRetrier<TDbContext>(TDbContext mainContext) where TDbContext : DbContext
     {
         return _configuration.DbContextRetrierConfiguration.DbContextRetrierType switch
         {

@@ -20,14 +20,14 @@ internal class ExecutionStrategyExtended<TDbContext> : IExecutionStrategyExtende
     public async Task<TResponse> ExecuteAsync<TResponse>(Func<TDbContext, Task<TResponse>> action,
         TDbContext mainContext)
     {
-        var betweenRetriesStrategy = _factory.ExecutionStrategy.CreateBetweenRetriesStrategy(mainContext);
-        var strategy = betweenRetriesStrategy.CreateExecutionStrategy();
+        var retrier = _factory.ExecutionStrategy.CreateDbContextRetrier(mainContext);
+        var strategy = retrier.CreateExecutionStrategy();
         int retryNumber = 1;
 
         return await strategy.ExecuteAsync(
             async () =>
             {
-                var context = await betweenRetriesStrategy.ProvideDbContextForRetry(retryNumber);
+                var context = await retrier.ProvideDbContextForRetry(retryNumber);
                 retryNumber += 1;
                 return await action(context);
             });
