@@ -1,15 +1,12 @@
-﻿namespace ExecutionStrategyExtended.Configuration;
+﻿using ExecutionStrategyExtended.Configuration.Interfaces;
+
+namespace ExecutionStrategyExtended.Factory;
 
 internal class MainFactory
 {
-    private readonly IExecutionStrategyInternalConfiguration _configuration;
-    private readonly IServiceProvider _provider;
-
     public MainFactory(IExecutionStrategyInternalConfiguration configuration, IServiceProvider provider)
     {
-        _configuration = configuration;
-        _provider = provider;
-        IdempotencyToken = new IdempotencyTokenFactoryPart(configuration, provider);
+        IdempotencyToken = new IdempotencyTokenFactoryPart(configuration);
         ExecutionStrategy = new ExecutionStrategyFactoryPart(configuration, provider);
     }
     

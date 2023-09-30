@@ -1,10 +1,10 @@
-﻿using ExecutionStrategyExtended.BetweenRetries;
+﻿using ExecutionStrategyExtended.BetweenRetryDbContext;
 using ExecutionStrategyExtended.Configuration.Builders;
-using ExecutionStrategyExtended.Utils;
+using ExecutionStrategyExtended.StrategyExtended;
 using ExecutionStrategyExtended.ViolationDetector;
 using Microsoft.Extensions.Internal;
 
-namespace ExecutionStrategyExtended.Configuration;
+namespace ExecutionStrategyExtended.Configuration.Interfaces;
 
 public interface IExecutionStrategyPublicConfiguration
 {

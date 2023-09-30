@@ -1,6 +1,4 @@
-﻿using ExecutionStrategyExtended.Models;
-
-namespace ExecutionStrategyExtended;
+﻿namespace ExecutionStrategyExtended.IdempotenceToken;
 
 internal class IdempotencyTokenService
 {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
-namespace ExecutionStrategyExtended.BetweenRetries;
+namespace ExecutionStrategyExtended.BetweenRetryDbContext;
 
 internal class ClearChangeTrackerBehavior<TDbContext> : IBetweenRetryDbContextBehavior<TDbContext>
     where TDbContext : DbContext

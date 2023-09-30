@@ -1,4 +1,4 @@
-﻿using ExecutionStrategyExtended.Models;
+﻿using ExecutionStrategyExtended.IdempotenceToken;
 using MoneyService.EntityFramework;
 using MoneyService.Models;
 

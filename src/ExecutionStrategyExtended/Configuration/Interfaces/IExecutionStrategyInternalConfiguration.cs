@@ -1,9 +1,9 @@
-﻿using ExecutionStrategyExtended.BetweenRetries;
-using ExecutionStrategyExtended.Utils;
+﻿using ExecutionStrategyExtended.BetweenRetryDbContext;
+using ExecutionStrategyExtended.StrategyExtended;
 using ExecutionStrategyExtended.ViolationDetector;
 using Microsoft.Extensions.Internal;
 
-namespace ExecutionStrategyExtended.Configuration;
+namespace ExecutionStrategyExtended.Configuration.Interfaces;
 
 internal interface IExecutionStrategyInternalConfiguration
 {

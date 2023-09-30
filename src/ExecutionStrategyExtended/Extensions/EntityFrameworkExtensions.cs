@@ -1,5 +1,5 @@
 ﻿using ExecutionStrategyExtended.Configuration;
-using ExecutionStrategyExtended.Models;
+using ExecutionStrategyExtended.IdempotenceToken;
 using Microsoft.EntityFrameworkCore;
 
 namespace ExecutionStrategyExtended.Extensions;

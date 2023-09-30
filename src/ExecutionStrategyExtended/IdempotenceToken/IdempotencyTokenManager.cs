@@ -1,7 +1,7 @@
-﻿using ExecutionStrategyExtended.Utils;
+﻿using ExecutionStrategyExtended.StrategyExtended;
 using Microsoft.Extensions.Internal;
 
-namespace ExecutionStrategyExtended.Models;
+namespace ExecutionStrategyExtended.IdempotenceToken;
 
 internal class IdempotencyTokenManager
 {

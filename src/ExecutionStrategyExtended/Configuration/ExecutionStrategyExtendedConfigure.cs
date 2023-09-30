@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using ExecutionStrategyExtended.Configuration.Interfaces;
+using Microsoft.Extensions.Options;
 
 namespace ExecutionStrategyExtended.Configuration;
 

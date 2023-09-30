@@ -1,5 +1,5 @@
 ﻿using System.Data;
-using ExecutionStrategyExtended;
+using ExecutionStrategyExtended.StrategyExtended;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MoneyService.EntityFramework;

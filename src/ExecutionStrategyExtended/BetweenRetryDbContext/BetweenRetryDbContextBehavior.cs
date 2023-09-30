@@ -1,6 +1,4 @@
-﻿using ExecutionStrategyExtended.Models;
-
-namespace ExecutionStrategyExtended.BetweenRetries;
+﻿namespace ExecutionStrategyExtended.BetweenRetryDbContext;
 
 public static class BetweenRetryDbContextBehavior
 {

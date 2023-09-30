@@ -1,4 +1,7 @@
 ﻿using ExecutionStrategyExtended.Configuration;
+using ExecutionStrategyExtended.Configuration.Interfaces;
+using ExecutionStrategyExtended.Factory;
+using ExecutionStrategyExtended.StrategyExtended;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;

@@ -1,4 +1,4 @@
-﻿using ExecutionStrategyExtended.Utils;
+﻿using ExecutionStrategyExtended.StrategyExtended;
 using Newtonsoft.Json.Linq;
 
 namespace MoneyService.ExtendedExecutionStrategyImpls;

@@ -1,4 +1,4 @@
-﻿namespace ExecutionStrategyExtended.Models;
+﻿namespace ExecutionStrategyExtended.BetweenRetryDbContext;
 
 public enum BetweenRetryDbContextBehaviorType
 {

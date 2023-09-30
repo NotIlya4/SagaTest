@@ -1,9 +1,9 @@
-﻿using ExecutionStrategyExtended.BetweenRetries;
-using ExecutionStrategyExtended.Models;
+﻿using ExecutionStrategyExtended.BetweenRetryDbContext;
+using ExecutionStrategyExtended.Configuration.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ExecutionStrategyExtended.Configuration;
+namespace ExecutionStrategyExtended.Factory;
 
 internal class ExecutionStrategyFactoryPart
 {

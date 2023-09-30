@@ -1,6 +1,7 @@
-﻿using ExecutionStrategyExtended.BetweenRetries;
+﻿using ExecutionStrategyExtended.BetweenRetryDbContext;
 using ExecutionStrategyExtended.Configuration.Builders;
-using ExecutionStrategyExtended.Utils;
+using ExecutionStrategyExtended.Configuration.Interfaces;
+using ExecutionStrategyExtended.StrategyExtended;
 using ExecutionStrategyExtended.ViolationDetector;
 using Microsoft.Extensions.Internal;
 

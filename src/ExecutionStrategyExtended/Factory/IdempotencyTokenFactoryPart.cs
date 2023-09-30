@@ -1,17 +1,16 @@
-﻿using ExecutionStrategyExtended.Models;
+﻿using ExecutionStrategyExtended.Configuration.Interfaces;
+using ExecutionStrategyExtended.IdempotenceToken;
 using Microsoft.EntityFrameworkCore;
 
-namespace ExecutionStrategyExtended.Configuration;
+namespace ExecutionStrategyExtended.Factory;
 
 internal class IdempotencyTokenFactoryPart
 {
     private readonly IExecutionStrategyInternalConfiguration _configuration;
-    private readonly IServiceProvider _provider;
 
-    public IdempotencyTokenFactoryPart(IExecutionStrategyInternalConfiguration configuration, IServiceProvider provider)
+    public IdempotencyTokenFactoryPart(IExecutionStrategyInternalConfiguration configuration)
     {
         _configuration = configuration;
-        _provider = provider;
     }
 
     public IdempotencyTokenManager CreateManager()
