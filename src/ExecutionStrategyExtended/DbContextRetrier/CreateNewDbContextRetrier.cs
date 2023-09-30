@@ -1,16 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
-namespace ExecutionStrategyExtended.BetweenRetryDbContext;
+namespace ExecutionStrategyExtended.DbContextRetrier;
 
-internal class CreateNewDbContextBehavior<TDbContext> : IBetweenRetryDbContextBehavior<TDbContext> where TDbContext : DbContext
+internal class CreateNewDbContextRetrier<TDbContext> : IDbContextRetrier<TDbContext> where TDbContext : DbContext
 {
     private readonly bool _disposePreviousContext;
     private readonly IDbContextFactory<TDbContext> _factory;
     private readonly TDbContext _mainContext;
     private TDbContext? _previousContext;
 
-    public CreateNewDbContextBehavior(bool disposePreviousContext, IDbContextFactory<TDbContext> factory, TDbContext mainContext)
+    public CreateNewDbContextRetrier(bool disposePreviousContext, IDbContextFactory<TDbContext> factory, TDbContext mainContext)
     {
         _disposePreviousContext = disposePreviousContext;
         _factory = factory;

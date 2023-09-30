@@ -1,5 +1,5 @@
-﻿using ExecutionStrategyExtended.BetweenRetryDbContext;
-using ExecutionStrategyExtended.Configuration.Interfaces;
+﻿using ExecutionStrategyExtended.Configuration.Interfaces;
+using ExecutionStrategyExtended.DbContextRetrier;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -16,15 +16,15 @@ internal class ExecutionStrategyFactoryPart
         _provider = provider;
     }
     
-    public IBetweenRetryDbContextBehavior<TDbContext> CreateBetweenRetriesStrategy<TDbContext>(TDbContext mainContext) where TDbContext : DbContext
+    public IDbContextRetrier<TDbContext> CreateBetweenRetriesStrategy<TDbContext>(TDbContext mainContext) where TDbContext : DbContext
     {
-        return _configuration.BetweenRetryDbContextBehaviorConfiguration.BetweenRetryDbContextBehaviorType switch
+        return _configuration.DbContextRetrierConfiguration.DbContextRetrierType switch
         {
-            BetweenRetryDbContextBehaviorType.CreateNew => new CreateNewDbContextBehavior<TDbContext>(
-                _configuration.BetweenRetryDbContextBehaviorConfiguration.DisposePreviousContext,
+            DbContextRetrierType.CreateNew => new CreateNewDbContextRetrier<TDbContext>(
+                _configuration.DbContextRetrierConfiguration.DisposePreviousContext,
                 _provider.GetRequiredService<IDbContextFactory<TDbContext>>(), mainContext),
-            BetweenRetryDbContextBehaviorType.ClearChangeTracker => new ClearChangeTrackerBehavior<TDbContext>(mainContext),
-            BetweenRetryDbContextBehaviorType.UseSame => new UseSameDbContextBehavior<TDbContext>(mainContext),
+            DbContextRetrierType.ClearChangeTracker => new ClearChangeTrackerRetrier<TDbContext>(mainContext),
+            DbContextRetrierType.UseSame => new UseSameDbContextRetrier<TDbContext>(mainContext),
             _ => throw new ArgumentOutOfRangeException()
         };
     }

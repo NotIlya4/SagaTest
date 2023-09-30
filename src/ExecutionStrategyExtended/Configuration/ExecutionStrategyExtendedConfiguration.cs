@@ -1,6 +1,6 @@
-﻿using ExecutionStrategyExtended.BetweenRetryDbContext;
-using ExecutionStrategyExtended.Configuration.Builders;
+﻿using ExecutionStrategyExtended.Configuration.Builders;
 using ExecutionStrategyExtended.Configuration.Interfaces;
+using ExecutionStrategyExtended.DbContextRetrier;
 using ExecutionStrategyExtended.StrategyExtended;
 using ExecutionStrategyExtended.ViolationDetector;
 using Microsoft.Extensions.Internal;
@@ -19,9 +19,9 @@ internal record ExecutionStrategyExtendedConfiguration : IExecutionStrategyPubli
                 SystemClock);
         
         BetweenRetryDbContextBehaviorConfigurationBuilder =
-            new BuilderProperty<BetweenRetryDbContextBehaviorConfiguration, IExecutionStrategyPublicConfiguration>(
-                configuration => BetweenRetryDbContextBehaviorConfiguration = configuration, this,
-                BetweenRetryDbContextBehaviorConfiguration);
+            new BuilderProperty<DbContextRetrierConfiguration, IExecutionStrategyPublicConfiguration>(
+                configuration => DbContextRetrierConfiguration = configuration, this,
+                DbContextRetrierConfiguration);
         
         IdempotenceViolationDetectorBuilder =
             new BuilderProperty<IIdempotenceViolationDetector, IExecutionStrategyPublicConfiguration>(
@@ -32,12 +32,12 @@ internal record ExecutionStrategyExtendedConfiguration : IExecutionStrategyPubli
     }
     
     public IBuilderPropertySetter<ISystemClock, IExecutionStrategyPublicConfiguration> SystemClockBuilder { get; }
-    public IBuilderPropertySetterConfig<BetweenRetryDbContextBehaviorConfiguration, IExecutionStrategyPublicConfiguration> BetweenRetryDbContextBehaviorConfigurationBuilder { get; }
+    public IBuilderPropertySetterConfig<DbContextRetrierConfiguration, IExecutionStrategyPublicConfiguration> BetweenRetryDbContextBehaviorConfigurationBuilder { get; }
     public IBuilderPropertySetter<IIdempotenceViolationDetector, IExecutionStrategyPublicConfiguration> IdempotenceViolationDetectorBuilder { get; }
     public IBuilderPropertySetter<IResponseSerializer, IExecutionStrategyPublicConfiguration> ResponseSerializerBuilder { get; }
 
     public ISystemClock SystemClock { get; set; } = new SystemClock();
-    public BetweenRetryDbContextBehaviorConfiguration BetweenRetryDbContextBehaviorConfiguration { get; set; } = new();
+    public DbContextRetrierConfiguration DbContextRetrierConfiguration { get; set; } = new();
     public IIdempotenceViolationDetector IdempotenceViolationDetector
     {
         get => _idempotenceViolationDetector!;

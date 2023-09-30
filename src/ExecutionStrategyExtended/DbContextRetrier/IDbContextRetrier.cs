@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
-namespace ExecutionStrategyExtended.BetweenRetryDbContext;
+namespace ExecutionStrategyExtended.DbContextRetrier;
 
-internal interface IBetweenRetryDbContextBehavior<TDbContext> where TDbContext : DbContext
+internal interface IDbContextRetrier<TDbContext> where TDbContext : DbContext
 {
     IExecutionStrategy CreateExecutionStrategy();
     Task<TDbContext> ProvideDbContextForRetry(int retryNumber);

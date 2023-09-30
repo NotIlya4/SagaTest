@@ -1,14 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
-namespace ExecutionStrategyExtended.BetweenRetryDbContext;
+namespace ExecutionStrategyExtended.DbContextRetrier;
 
-internal class ClearChangeTrackerBehavior<TDbContext> : IBetweenRetryDbContextBehavior<TDbContext>
+internal class UseSameDbContextRetrier<TDbContext> : IDbContextRetrier<TDbContext>
     where TDbContext : DbContext
 {
     private readonly TDbContext _context;
 
-    public ClearChangeTrackerBehavior(TDbContext context)
+    public UseSameDbContextRetrier(TDbContext context)
     {
         _context = context;
     }
@@ -20,7 +20,6 @@ internal class ClearChangeTrackerBehavior<TDbContext> : IBetweenRetryDbContextBe
 
     public Task<TDbContext> ProvideDbContextForRetry(int retry)
     {
-        _context.ChangeTracker.Clear();
         return Task.FromResult(_context);
     }
 }
