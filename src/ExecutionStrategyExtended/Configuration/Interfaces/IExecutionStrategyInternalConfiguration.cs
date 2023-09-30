@@ -9,6 +9,6 @@ internal interface IExecutionStrategyInternalConfiguration
 {
     ISystemClock SystemClock { get; }
     DbContextRetrierConfiguration DbContextRetrierConfiguration { get; }
-    IIdempotenceViolationDetector IdempotenceViolationDetector { get; }
+    IIdempotenceViolationDetector? IdempotenceViolationDetector { get; }
     IResponseSerializer ResponseSerializer { get; }
 }

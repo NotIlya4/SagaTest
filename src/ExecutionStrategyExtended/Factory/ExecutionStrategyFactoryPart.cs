@@ -6,24 +6,23 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ExecutionStrategyExtended.Factory;
 
-internal class ExecutionStrategyFactoryPart
+internal class ExecutionStrategyFactoryPart<TDbContext> where TDbContext : DbContext
 {
     private readonly IExecutionStrategyInternalConfiguration _configuration;
-    private readonly IServiceProvider _provider;
+    private readonly IDbContextFactory<TDbContext> _dbContextFactory;
 
-    public ExecutionStrategyFactoryPart(IExecutionStrategyInternalConfiguration configuration, IServiceProvider provider)
+    public ExecutionStrategyFactoryPart(IExecutionStrategyInternalConfiguration configuration, IDbContextFactory<TDbContext> dbContextFactory)
     {
         _configuration = configuration;
-        _provider = provider;
+        _dbContextFactory = dbContextFactory;
     }
     
-    public IDbContextRetrier<TDbContext> CreateDbContextRetrier<TDbContext>(TDbContext mainContext) where TDbContext : DbContext
+    public IDbContextRetrier<TDbContext> CreateDbContextRetrier(TDbContext mainContext)
     {
         return _configuration.DbContextRetrierConfiguration.DbContextRetrierType switch
         {
             DbContextRetrierType.CreateNew => new CreateNewDbContextRetrier<TDbContext>(
-                _configuration.DbContextRetrierConfiguration.DisposePreviousContext,
-                _provider.GetRequiredService<IDbContextFactory<TDbContext>>(), mainContext),
+                _configuration.DbContextRetrierConfiguration.DisposePreviousContext, _dbContextFactory, mainContext),
             DbContextRetrierType.ClearChangeTracker => new ClearChangeTrackerRetrier<TDbContext>(mainContext),
             DbContextRetrierType.UseSame => new UseSameDbContextRetrier<TDbContext>(mainContext),
             _ => throw new ArgumentOutOfRangeException()

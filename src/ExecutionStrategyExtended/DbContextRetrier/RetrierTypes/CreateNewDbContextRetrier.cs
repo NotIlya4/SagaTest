@@ -22,7 +22,7 @@ internal class CreateNewDbContextRetrier<TDbContext> : IDbContextRetrier<TDbCont
         return _mainContext.Database.CreateExecutionStrategy();
     }
 
-    public async Task<TDbContext> ProvideDbContextForRetry(int retry)
+    public async Task<TDbContext> ProvideDbContextForRetry(int attempt)
     {
         await DisposePreviousContext();
 

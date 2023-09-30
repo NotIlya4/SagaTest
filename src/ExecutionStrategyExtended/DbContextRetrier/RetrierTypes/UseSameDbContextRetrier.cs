@@ -18,7 +18,7 @@ internal class UseSameDbContextRetrier<TDbContext> : IDbContextRetrier<TDbContex
         return _context.Database.CreateExecutionStrategy();
     }
 
-    public Task<TDbContext> ProvideDbContextForRetry(int retry)
+    public Task<TDbContext> ProvideDbContextForRetry(int attempt)
     {
         return Task.FromResult(_context);
     }

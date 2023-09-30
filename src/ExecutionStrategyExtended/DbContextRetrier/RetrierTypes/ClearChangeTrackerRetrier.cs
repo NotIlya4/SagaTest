@@ -18,7 +18,7 @@ internal class ClearChangeTrackerRetrier<TDbContext> : IDbContextRetrier<TDbCont
         return _context.Database.CreateExecutionStrategy();
     }
 
-    public Task<TDbContext> ProvideDbContextForRetry(int retry)
+    public Task<TDbContext> ProvideDbContextForRetry(int attempt)
     {
         _context.ChangeTracker.Clear();
         return Task.FromResult(_context);

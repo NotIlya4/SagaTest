@@ -9,43 +9,42 @@ namespace ExecutionStrategyExtended.Configuration;
 
 internal record ExecutionStrategyExtendedConfiguration : IExecutionStrategyPublicConfiguration, IExecutionStrategyInternalConfiguration
 {
+    private IBuilderPropertySetter<ISystemClock, IExecutionStrategyPublicConfiguration> _systemClockBuilder;
+    private IBuilderPropertySetterConfig<DbContextRetrierConfiguration, IExecutionStrategyPublicConfiguration> _dbContextRetrierConfigurationBuilder;
+    private IBuilderPropertySetter<IIdempotenceViolationDetector, IExecutionStrategyPublicConfiguration> _idempotenceViolationDetectorBuilder;
+    private IBuilderPropertySetter<IResponseSerializer, IExecutionStrategyPublicConfiguration> _responseSerializerBuilder;
+    private ISystemClock _systemClock = new SystemClock();
+    private DbContextRetrierConfiguration _dbContextRetrierConfiguration = new();
     private IIdempotenceViolationDetector? _idempotenceViolationDetector;
     private IResponseSerializer? _responseSerializer;
 
     public ExecutionStrategyExtendedConfiguration()
     {
-        SystemClockBuilder =
-            new BuilderProperty<ISystemClock, IExecutionStrategyPublicConfiguration>(clock => SystemClock = clock, this,
-                SystemClock);
+        _systemClockBuilder =
+            new BuilderProperty<ISystemClock, IExecutionStrategyPublicConfiguration>(clock => _systemClock = clock, this,
+                _systemClock);
         
-        BetweenRetryDbContextBehaviorConfigurationBuilder =
+        _dbContextRetrierConfigurationBuilder =
             new BuilderProperty<DbContextRetrierConfiguration, IExecutionStrategyPublicConfiguration>(
-                configuration => DbContextRetrierConfiguration = configuration, this,
-                DbContextRetrierConfiguration);
+                configuration => _dbContextRetrierConfiguration = configuration, this,
+                _dbContextRetrierConfiguration);
         
-        IdempotenceViolationDetectorBuilder =
+        _idempotenceViolationDetectorBuilder =
             new BuilderProperty<IIdempotenceViolationDetector, IExecutionStrategyPublicConfiguration>(
-                detector => IdempotenceViolationDetector = detector, this);
+                detector => _idempotenceViolationDetector = detector, this);
 
-        ResponseSerializerBuilder = new BuilderProperty<IResponseSerializer, IExecutionStrategyPublicConfiguration>(
-            serializer => ResponseSerializer = serializer, this);
+        _responseSerializerBuilder = new BuilderProperty<IResponseSerializer, IExecutionStrategyPublicConfiguration>(
+            serializer => _responseSerializer = serializer, this);
     }
-    
-    public IBuilderPropertySetter<ISystemClock, IExecutionStrategyPublicConfiguration> SystemClockBuilder { get; }
-    public IBuilderPropertySetterConfig<DbContextRetrierConfiguration, IExecutionStrategyPublicConfiguration> BetweenRetryDbContextBehaviorConfigurationBuilder { get; }
-    public IBuilderPropertySetter<IIdempotenceViolationDetector, IExecutionStrategyPublicConfiguration> IdempotenceViolationDetectorBuilder { get; }
-    public IBuilderPropertySetter<IResponseSerializer, IExecutionStrategyPublicConfiguration> ResponseSerializerBuilder { get; }
 
-    public ISystemClock SystemClock { get; set; } = new SystemClock();
-    public DbContextRetrierConfiguration DbContextRetrierConfiguration { get; set; } = new();
-    public IIdempotenceViolationDetector IdempotenceViolationDetector
-    {
-        get => _idempotenceViolationDetector!;
-        set => _idempotenceViolationDetector = value;
-    }
-    public IResponseSerializer ResponseSerializer
-    {
-        get => _responseSerializer!;
-        set => _responseSerializer = value;
-    }
+
+    ISystemClock IExecutionStrategyInternalConfiguration.SystemClock => _systemClock;
+    DbContextRetrierConfiguration IExecutionStrategyInternalConfiguration.DbContextRetrierConfiguration => _dbContextRetrierConfiguration;
+    IIdempotenceViolationDetector? IExecutionStrategyInternalConfiguration.IdempotenceViolationDetector => _idempotenceViolationDetector;
+    IResponseSerializer IExecutionStrategyInternalConfiguration.ResponseSerializer => _responseSerializer!;
+
+    IBuilderPropertySetter<ISystemClock, IExecutionStrategyPublicConfiguration> IExecutionStrategyPublicConfiguration.SystemClock => _systemClockBuilder;
+    IBuilderPropertySetterConfig<DbContextRetrierConfiguration, IExecutionStrategyPublicConfiguration> IExecutionStrategyPublicConfiguration.DbContextRetrierConfiguration => _dbContextRetrierConfigurationBuilder;
+    IBuilderPropertySetter<IIdempotenceViolationDetector, IExecutionStrategyPublicConfiguration> IExecutionStrategyPublicConfiguration.IdempotenceViolationDetector => _idempotenceViolationDetectorBuilder;
+    IBuilderPropertySetter<IResponseSerializer, IExecutionStrategyPublicConfiguration> IExecutionStrategyPublicConfiguration.ResponseSerializer => _responseSerializerBuilder;
 }

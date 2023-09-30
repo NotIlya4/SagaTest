@@ -1,15 +1,16 @@
 ﻿using ExecutionStrategyExtended.Configuration.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace ExecutionStrategyExtended.Factory;
 
-internal class MainFactory
+internal class MainFactory<TDbContext> where TDbContext : DbContext
 {
-    public MainFactory(IExecutionStrategyInternalConfiguration configuration, IServiceProvider provider)
+    public MainFactory(IExecutionStrategyInternalConfiguration configuration, IDbContextFactory<TDbContext> factory)
     {
         IdempotencyToken = new IdempotencyTokenFactoryPart(configuration);
-        ExecutionStrategy = new ExecutionStrategyFactoryPart(configuration, provider);
+        ExecutionStrategy = new ExecutionStrategyFactoryPart<TDbContext>(configuration, factory);
     }
     
     public IdempotencyTokenFactoryPart IdempotencyToken { get; }
-    public ExecutionStrategyFactoryPart ExecutionStrategy { get; }
+    public ExecutionStrategyFactoryPart<TDbContext> ExecutionStrategy { get; }
 }
