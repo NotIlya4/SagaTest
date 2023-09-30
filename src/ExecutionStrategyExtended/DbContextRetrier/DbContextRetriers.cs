@@ -2,7 +2,7 @@
 
 public static class DbContextRetriers
 {
-    public static DbContextRetrierConfiguration CreateNewDbContextStrategy(bool disposePreviousContext = false)
+    public static DbContextRetrierConfiguration NewDbContextRetrier(bool disposePreviousContext = false)
     {
         return new DbContextRetrierConfiguration()
         {
@@ -11,7 +11,7 @@ public static class DbContextRetriers
         };
     }
 
-    public static DbContextRetrierConfiguration ClearChangeTrackerStrategy()
+    public static DbContextRetrierConfiguration ClearChangeTrackerRetrier()
     {
         return new DbContextRetrierConfiguration()
         {
@@ -19,7 +19,7 @@ public static class DbContextRetriers
         };
     }
     
-    public static DbContextRetrierConfiguration UseSameDbContextStrategy()
+    public static DbContextRetrierConfiguration UseSameDbContextRetrier()
     {
         return new DbContextRetrierConfiguration()
         {

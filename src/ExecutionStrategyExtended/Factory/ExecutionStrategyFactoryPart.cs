@@ -1,5 +1,6 @@
 ﻿using ExecutionStrategyExtended.Configuration.Interfaces;
 using ExecutionStrategyExtended.DbContextRetrier;
+using ExecutionStrategyExtended.DbContextRetrier.RetrierTypes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 

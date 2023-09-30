@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
-namespace ExecutionStrategyExtended.DbContextRetrier;
+namespace ExecutionStrategyExtended.DbContextRetrier.RetrierTypes;
 
 internal class UseSameDbContextRetrier<TDbContext> : IDbContextRetrier<TDbContext>
     where TDbContext : DbContext
